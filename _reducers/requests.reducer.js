@@ -100,10 +100,11 @@ export function requests(state = initialState, action) {
       return initialState;
 
     case requestsConstants.ADD_MESSAGE:
-      console.log( 'reducer ' + action.req, action.message)
+
       return {
         ...state,
-        requests: state.requests.map((item, index) => item.task_lk_id == action.req ? { ...item, unread_messages: item.unread_messages + 1 } : item)
+        requests: state.requests.map((item, index) => item.task_lk_id == action.req ? { ...item, unread_messages: item.unread_messages + 1 } : item),
+        //request_messages: state.request_messages !== undefined ? state.request_messages.task_lk_id == action.req ? {...state.request_messages, message_read} : state.request_messages : {}
       };
 
     default:
