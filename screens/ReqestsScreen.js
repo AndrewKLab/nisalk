@@ -6,11 +6,13 @@ import { styles } from '../_styles/styles';
 import { reqestsActions } from '../_actions';
 import { Loading, ListItem, Alert } from '../_components';
 import messaging from '@react-native-firebase/messaging';
+import PushNotification from "react-native-push-notification";
 
 
 const ReqestsScreen = ({ dispatch, jwt, requests, requests_loading, requests_error, navigation }) => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+
   useEffect(() => {
     dispatch(reqestsActions.getReuests(jwt)).then(() => {
       setLoading(false)
@@ -18,7 +20,20 @@ const ReqestsScreen = ({ dispatch, jwt, requests, requests_loading, requests_err
     //console.log(navigation.navigate('Reqests'))
 
     messaging().onMessage(remoteMessage => {
-      console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
+      const title = remoteMessage.notification.title;
+      const body = remoteMessage.notification.body;
+      const task = remoteMessage.data.task;
+      const message = remoteMessage.data.message;
+
+      PushNotification.localNotification({
+        channelId: "1337",
+        title: title,
+        message: body
+      });
+
+      dispatch(reqestsActions.addMessage(task, message))
+
+      console.log('A new FCM message arrived!', JSON.stringify(remoteMessage.data));
 
     });
 

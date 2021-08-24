@@ -6,7 +6,8 @@ export const reqestsActions = {
   getReuests,
   getReuestMessages,
   sendMessage,
-  readMessages
+  readMessages,
+  addMessage
 };
 
 function getReuests(jwt) {
@@ -116,3 +117,8 @@ function readMessages(jwt, type, req, message) {
   }
 
 }
+
+function addMessage(req, message) {
+    return { type: requestsConstants.ADD_MESSAGE, message, req };
+}
+

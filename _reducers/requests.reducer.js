@@ -99,6 +99,13 @@ export function requests(state = initialState, action) {
     case userConstants.LOGOUT:
       return initialState;
 
+    case requestsConstants.ADD_MESSAGE:
+      console.log( 'reducer ' + action.req, action.message)
+      return {
+        ...state,
+        requests: state.requests.map((item, index) => item.task_lk_id == action.req ? { ...item, unread_messages: item.unread_messages + 1 } : item)
+      };
+
     default:
       return state;
   }

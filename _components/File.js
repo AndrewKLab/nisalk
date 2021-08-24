@@ -1,18 +1,22 @@
 import React, { useCallback, useState } from "react";
-import { View, Alert, Text } from "react-native";
-import { Surface } from 'react-native-paper';
+import { View, Alert, Text, TouchableOpacity } from "react-native";
+import { Surface, ProgressBar } from 'react-native-paper';
 import { styles } from "../_styles/styles";
 import RNFS from 'react-native-fs';
 import FileViewer from 'react-native-file-viewer';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-export const File = ({ url, title, style, mb }) => {
+export const File = ({ url, title, style, mb, index, files }) => {
 
-    const [downloadProgress, setDownloadProgress] = useState(0)
 
-    const downloadFile = async (booksTitle, bookList) => {
-        let downloadedBooksCount = 0;
+    const [downloadProgress, setDownloadProgress] = useState(0);
+
+    const downloadFile = async () => {
+        let downloadedFilesCount = 0;
+        const filesCount = files.length;
         let path_to_file = `${RNFS.ExternalDirectoryPath}/${title}`;
+
+
         if (await RNFS.exists(path_to_file)) {
             FileViewer.open(`file:///${RNFS.ExternalDirectoryPath}/${title}`)
                 .then(() => {
@@ -23,29 +27,26 @@ export const File = ({ url, title, style, mb }) => {
                 });
 
         } else {
-            console.log("BLAH DOES NOT EXIST");
+            var fileSizeKB = 0;
+            let result = await RNFS.downloadFile({
+                fromUrl: url,
+                toFile: path_to_file,
+                discretionary: true,
+                progressDivider: 100,
+                progressInterval: 100,
+                begin: (res) => {
+                    fileSizeKB = res.contentLength / 1024;
+                    downloadedFilesCount += 1;
+                    console.log(`${downloadedFilesCount}. Kayıt İndirilmeye Başlandı`)
+                },
+                progress: (res) => {
+                  const downloadPercent = ((((res.bytesWritten / 1024) * 100) / fileSizeKB))
+                  console.log(downloadPercent / 100)
+                  setDownloadProgress(downloadPercent > 100 ? 100 : downloadPercent / 100);
+             }
+            }).promise;
+            setDownloadProgress((downloadedFilesCount) * 100);
         }
-
-        let result = await RNFS.downloadFile({
-            fromUrl: url,
-            toFile: path_to_file,
-            discretionary: true,
-            progressDivider: 100,
-            progressInterval: 100,
-            begin: (res) => {
-                console.log(`${url} ${RNFS.ExternalDirectoryPath}/${title}`)
-                downloadedBooksCount += 1;
-                console.log(`${downloadedBooksCount}. Kayıt İndirilmeye Başlandı`)
-            },
-            // progress: (res) => {
-            //   const downloadPercent = ((((res.bytesWritten / 1000) * 100) / book.filesizeKB))
-            //   console.log(downloadPercent)
-            //   setDownloadProgress(downloadPercent > 100 ? 100 : downloadPercent);
-            // }
-        }).promise;
-        console.log(result.statusCode)
-        setDownloadProgress((downloadedBooksCount) * 100);
-
 
         // if (downloadedBooksCount == booksCount) {
         //     console.log("İndirme Tamamlanı")
@@ -53,15 +54,20 @@ export const File = ({ url, title, style, mb }) => {
 
     }
 
-
-
     return (
-        <Surface style={[styles.file, {marginBottom: mb}]} >
-            <Icon name="file" style={styles.fileIcon} />
-            <Text style={[styles.fileText, style]} onPress={downloadFile} textBreakStrategy={'simple'}>
-
+        <TouchableOpacity key={index} style={[styles.file, { marginBottom: mb, }]} onPress={downloadFile}>
+            <Icon name="file" style={styles.fileIcon} color={'#020202'} />
+            <Text style={[styles.fileText, style]} textBreakStrategy={'simple'}>
                 {title.slice(11)}
             </Text>
-        </Surface>
+            {downloadProgress !== 0 && downloadProgress !== 100 && <View opacity={0.9} style={[styles.file, {
+                position: 'absolute', top: 8, right: 4, left: 4, bottom: 8, alignItems: 'center', alignSelf: 'center',
+                height: '100%',
+                backgroundColor: '#e4e3e9'
+            }]}>
+                <ProgressBar style={{ minWidth: '100%' }} progress={downloadProgress} color={'#000'} />
+            </View>}
+        </TouchableOpacity>
+
     );
 }

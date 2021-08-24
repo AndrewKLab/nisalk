@@ -181,7 +181,9 @@ export const styles = StyleSheet.create({
   messageTextRight: {
     backgroundColor: '#047ffe',
     borderRadius: 8,
-    borderBottomRightRadius: 0
+    borderBottomRightRadius: 0,
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end'
   },
 
   messageTextColorLeft: {
@@ -218,7 +220,7 @@ export const styles = StyleSheet.create({
   },
 
   fileRight: {
-    color: '#B3D8FF'
+    color: '#020202'
   },
 
   //chatInput
@@ -294,7 +296,7 @@ export const styles = StyleSheet.create({
 file: {
   backgroundColor: '#fff',
   flexDirection: 'row',
-  alignItems: 'center',
+minWidth: 80,
   padding: 8,
   borderRadius: 8
 },
@@ -304,8 +306,9 @@ file: {
   },
 
   fileText:{
- margin: 8,
- flexShrink: 1
+ marginHorizontal: 8,
+ flexShrink: 1,
+ fontSize: 10
   }
 
 
