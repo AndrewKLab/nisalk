@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { theme } from './_styles';
 import { Provider as PaperProvider } from 'react-native-paper';
 //screens
-import Router from './Router'
+import {MainNavigator} from './routers';
 
 function App() {
 
@@ -12,7 +12,7 @@ function App() {
   return (
     <Provider store={store}>
       <PaperProvider theme={theme}>
-        <Router />
+        <MainNavigator />
       </PaperProvider>
     </Provider>
   )

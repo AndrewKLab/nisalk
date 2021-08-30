@@ -56,9 +56,9 @@ function validateToken(jwt, navigation, firstlogin, setscreen) {
         };
         dispatch(success(user));
         if (firstlogin) {
-          setscreen('Reqests')
+          setscreen('BottomTabNavigator')
         } else {
-          navigation.navigate('Reqests')
+          navigation.navigate('BottomTabNavigator')
         }
       }
       ).catch(function (error) {
