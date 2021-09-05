@@ -10,7 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 //screens
-import { LoginScreen, ReqestsScreen, ReqestСhatScreen, Appeals, TS } from '../screens';
+import { LoginScreen, ReqestsScreen, ReqestСhatScreen, Appeals, AppealsItem, AppealsForm, TS, TSItem } from '../screens';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -58,7 +58,10 @@ const BottomTabNavigator = ({ dispatch }) => {
     <Tab.Navigator
       initialRouteName="MyTasks"
       tabBarOptions={{
-        activeTintColor: '#2f7cfe',
+        activeTintColor: '#fff',
+        inactiveTintColor: 'rgba(255, 255, 255, 0.54)',
+        tabStyle: { backgroundColor: '#2f7cfe' },
+
       }}
     >
       <Tab.Screen
@@ -77,7 +80,7 @@ const BottomTabNavigator = ({ dispatch }) => {
         options={{
           tabBarLabel: 'Мои заявки',
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="car" color={color} size={26} />
+            <MaterialCommunityIcons name="chat" color={color} size={26} />
           ),
         }}
       />
@@ -87,7 +90,7 @@ const BottomTabNavigator = ({ dispatch }) => {
         options={{
           tabBarLabel: 'ТС',
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="chat" color={color} size={26} />
+            <MaterialCommunityIcons name="car" color={color} size={26} />
           ),
         }}
       />
@@ -109,11 +112,22 @@ const AppealsNavigator = ({ }) => {
   };
 
   return (
-    <AppealsStackNavigator.Navigator initialRouteName={'Reqests'} screenOptions={({ navigation, route }) => screenOptions(navigation, route)}>
+    <AppealsStackNavigator.Navigator initialRouteName={'AppealsScreen'} screenOptions={({ navigation, route }) => screenOptions(navigation, route)}>
       <AppealsStackNavigator.Screen
         options={({ navigation, route }) => ({ title: 'НИСА lk', headerLeft: () => null, })}
         name="AppealsScreen"
         component={Appeals}
+      />
+
+      <AppealsStackNavigator.Screen
+        options={({ navigation, route }) => ({ title: 'НИСА lk' })}
+        name="AppealsItemScreen"
+        component={AppealsItem}
+      />
+      <AppealsStackNavigator.Screen
+        options={({ navigation, route }) => ({ title: route.params.title })}
+        name="AppealsFormScreen"
+        component={AppealsForm}
       />
     </AppealsStackNavigator.Navigator>
   );
@@ -178,11 +192,16 @@ const TSNavigator = ({ }) => {
   };
 
   return (
-    <TSStackNavigator.Navigator initialRouteName={'Reqests'} screenOptions={({ navigation, route }) => screenOptions(navigation, route)}>
+    <TSStackNavigator.Navigator initialRouteName={'TSScreen'} screenOptions={({ navigation, route }) => screenOptions(navigation, route)}>
       <TSStackNavigator.Screen
         options={({ navigation, route }) => ({ title: 'НИСА lk', headerLeft: () => null, })}
         name="TSScreen"
         component={TS}
+      />
+      <TSStackNavigator.Screen
+        options={({ navigation, route }) => ({ title: 'НИСА lk' })}
+        name="TSItemScreen"
+        component={TSItem}
       />
     </TSStackNavigator.Navigator>
   );

@@ -149,11 +149,30 @@ export const styles = StyleSheet.create({
     elevation: 4
   },
 
+  transportListItem: {
+    marginHorizontal: 8,
+    marginVertical: 5,
+    borderColor: "#e0e0e0",
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderRadius: 8,
+  },
+
+  transportListItemTitle: {
+    padding: 8,
+    borderColor: "#e0e0e0",
+    borderBottomWidth: 1,
+  },
+
+  transportListItemText: {
+    padding: 8,
+  },
+
   //Message
   message: {
     marginHorizontal: 8,
     marginVertical: 4,
-    
+
   },
 
   messageLeft: {
@@ -239,7 +258,7 @@ export const styles = StyleSheet.create({
   badge: {
     backgroundColor: '#2f7cfe',
     lineHeight: 14,
-    },
+  },
 
   fabbadge: {
     position: 'absolute',
@@ -279,7 +298,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center'
   },
 
-  filesBoardDellFileButton:{
+  filesBoardDellFileButton: {
     backgroundColor: '#fff',
     position: 'absolute',
     elevation: 1,
@@ -291,26 +310,81 @@ export const styles = StyleSheet.create({
     height: 50,
   },
 
-//File
+  //File
 
-file: {
-  backgroundColor: '#fff',
-  flexDirection: 'row',
-minWidth: 80,
-  padding: 8,
-  borderRadius: 8
-},
+  file: {
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    minWidth: 80,
+    padding: 8,
+    borderRadius: 8
+  },
 
-  fileIcon:{
+  fileIcon: {
     fontSize: 32,
   },
 
-  fileText:{
- marginHorizontal: 8,
- flexShrink: 1,
- fontSize: 10
-  }
+  fileText: {
+    marginHorizontal: 8,
+    flexShrink: 1,
+    fontSize: 10
+  },
 
+  //TSItemScreen
+  transportItemContainer:{
+    flex: 1
+  },
+
+  transportItem: {
+    borderColor: "#e0e0e0",
+    borderBottomWidth: 1,
+  },
+
+  transportItemTitle: {
+    padding: 8,
+    borderColor: "#e0e0e0",
+    borderBottomWidth: 1,
+  },
+
+  transportItemText: {
+    padding: 8,
+
+  },
+
+  transportFormButtonContainer: { 
+    padding: 8 
+  },
+
+  transportFormButton: { 
+    marginBottom: 12 
+  },
+
+  //form
+
+  formContainer:{
+    padding: 8
+  },
+
+  formOrgContainer:{
+    padding: 8,
+    borderColor: "#e0e0e0",
+    borderWidth: 1,
+    borderRadius: 8,
+    marginBottom: 8,
+    backgroundColor: '#fff'
+  },
+
+  formInputsContainer:{
+    padding: 8,
+    borderColor: "#e0e0e0",
+    borderWidth: 1,
+    borderRadius: 8,
+    backgroundColor: '#fff'
+  },
+
+  formInput: {
+    marginBottom: 8
+  }
 
 });
 

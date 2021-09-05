@@ -4,7 +4,7 @@ import color from 'color';
 export const theme = {
     ...DefaultTheme,
     roundness: 2,
-    dark: true,
+
     colors: {
         ...DefaultTheme.colors,
         primary: '#2f7cfe',
