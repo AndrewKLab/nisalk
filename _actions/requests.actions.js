@@ -7,7 +7,8 @@ export const reqestsActions = {
   getReuestMessages,
   sendMessage,
   readMessages,
-  addMessage
+  addMessage,
+  createRequest
 };
 
 function getReuests(jwt) {
@@ -119,6 +120,39 @@ function readMessages(jwt, type, req, message) {
 }
 
 function addMessage(req, message) {
-    return { type: requestsConstants.ADD_MESSAGE, message, req };
+  return { type: requestsConstants.ADD_MESSAGE, message, req };
+}
+
+function createRequest(token, theme, message, org_id, mark, model, number, region, files, openAlert) {
+  return (dispatch) => {
+    //dispatch(request({ token }));
+
+    return reqestsService.createRequest(token, theme, message, org_id, mark, model, number, region, files)
+      .then(res => res.json())
+      .then(function (result) {
+        if (result.errors === undefined) {
+          if(result.response == 'Ok'){
+            openAlert();
+          }
+          //dispatch(success(result.response, user, files));
+        } else {
+          alert(result.errors)
+        }
+      })
+      .catch(error => {
+        console.log(error)
+        //dispatch(failure(error.response.data.message))
+      });
+  };
+
+  function request(token) {
+    return { type: requestsConstants.CREATE_REQUEST_REQUEST, token };
+  }
+  function success(response) {
+    return { type: requestsConstants.CREATE_REQUEST_SUCCESS, response };
+  }
+  function failure(error) {
+    return { type: requestsConstants.CREATE_REQUEST_FAILURE, error };
+  }
 }
 

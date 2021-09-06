@@ -1,9 +1,13 @@
 import { transportConstants } from '../_constants';
 
 const initialState = {
-    transports_loading: false,
-    transports_error: null,
-    transports: []
+  transports_loading: false,
+  transports_error: null,
+  transports: [],
+
+  create_reqest_loading: false,
+  create_reqest_error: null,
+  create_reqest_status: '',
 };
 
 export function transport(state = initialState, action) {

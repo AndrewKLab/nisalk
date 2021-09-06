@@ -4,7 +4,7 @@ import { transportConstants } from '../_constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const transportActions = {
-    getTransports,
+    getTransports
 };
 
 

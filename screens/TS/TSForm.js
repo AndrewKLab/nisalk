@@ -9,7 +9,7 @@ import { styles } from '../../_styles/styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 
-const AppealsForm = ({ dispatch, navigation, jwt, route, user }) => {
+const TSForm = ({ dispatch, navigation, jwt, route, user }) => {
     const [loading, setLoading] = useState(true);
     const [visible, setVisible] = React.useState(false);
     const { ts, theme } = route.params;
@@ -175,5 +175,5 @@ const mapStateToProps = (state) => {
     };
 };
 
-const connectedAppealsForm = connect(mapStateToProps)(AppealsForm)
-export { connectedAppealsForm as AppealsForm };
+const connectedTSForm = connect(mapStateToProps)(TSForm)
+export { connectedTSForm as TSForm };

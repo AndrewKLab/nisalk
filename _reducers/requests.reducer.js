@@ -107,6 +107,27 @@ export function requests(state = initialState, action) {
         //request_messages: state.request_messages !== undefined ? state.request_messages.task_lk_id == action.req ? {...state.request_messages, message_read} : state.request_messages : {}
       };
 
+    //CREATE REQEST
+    case requestsConstants.CREATE_REQUEST_REQUEST:
+      return {
+        ...state,
+        transports_loading: true,
+        transports_error: null,
+      };
+    case requestsConstants.CREATE_REQUEST_SUCCESS:
+      return {
+        ...state,
+        transports_loading: false,
+        transports_error: null,
+        transports: action.transports
+      };
+    case requestsConstants.CREATE_REQUEST_FAILURE:
+      return {
+        ...state,
+        transports_loading: false,
+        transports_error: action.error,
+      };
+
     default:
       return state;
   }

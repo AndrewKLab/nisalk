@@ -6,7 +6,8 @@ export const reqestsService = {
   getReuests,
   getReuestMessages,
   sendMessage,
-  readMessages
+  readMessages,
+  createRequest
 };
 
 function getReuests(token) {
@@ -75,4 +76,29 @@ function readMessages(token, type, req, message) {
 }
 
 
+function createRequest(token, theme, message, org_id, mark, model, number, region, files) {
+  const fileToUpload = files;
+  const data = new FormData();
+  if (files.length > 0) {
+    console.log(files);
+    for (var i = 0; i < fileToUpload.length; i++) {
+      data.append('file[]', fileToUpload[i]);
+    }
+  } else {
+    console.log("files");
+    // If no file selected the show alert
+    data.append('nofile[]', "")
+  }
 
+  return fetch(
+    `${configApi.apiUrl}/app/request/save?theme=${theme}&message=${message}&org_id=${org_id}&mark=${mark}&model=${model}&number=${number}&region=${region}`,
+    {
+      method: 'post',
+      body: data,
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data; ',
+      },
+    }
+  );
+}

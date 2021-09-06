@@ -3,7 +3,7 @@ import { configApi } from './config';
 import axios from 'axios';
 
 export const transportService = {
-  getTransports,
+  getTransports
 };
 
 function getTransports(token) {

@@ -10,7 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 //screens
-import { LoginScreen, ReqestsScreen, ReqestСhatScreen, Appeals, AppealsItem, AppealsForm, TS, TSItem } from '../screens';
+import { LoginScreen, ReqestsScreen, ReqestСhatScreen, Appeals, AppealsItem, AppealsForm, TS, TSItem, TSForm } from '../screens';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -202,6 +202,11 @@ const TSNavigator = ({ }) => {
         options={({ navigation, route }) => ({ title: 'НИСА lk' })}
         name="TSItemScreen"
         component={TSItem}
+      />
+      <TSStackNavigator.Screen
+        options={({ navigation, route }) => ({ title: 'НИСА lk' })}
+        name="TSFormScreen"
+        component={TSForm}
       />
     </TSStackNavigator.Navigator>
   );

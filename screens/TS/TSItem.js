@@ -17,6 +17,11 @@ const TSItem = ({ dispatch, navigation, route }) => {
 
     // if (loading || transports_loading) return <Loading />
     // if (transports_error !== null) return <Alert message={transports_error} onRefreshError={onRefreshError} />
+
+    const goToForm = (title, theme) => {
+        navigation.navigate('TSFormScreen', { title: title, theme: theme, ts: item })
+    }
+
     return (
         <View style={styles.transportItemContainer}>
             <View style={styles.transportItem}>
@@ -27,11 +32,11 @@ const TSItem = ({ dispatch, navigation, route }) => {
                 </View>
             </View>
             <ScrollView style={styles.transportFormButtonContainer}>
-                <Button style={styles.transportFormButton} mode="contained" onPress={() => console.log('Pressed')}>Техподдержка</Button>
-                <Button style={styles.transportFormButton} mode="contained" onPress={() => console.log('Pressed')}>Заказать мониторнинг</Button>
-                <Button style={styles.transportFormButton} mode="contained" onPress={() => console.log('Pressed')}>Заказ или ремонт тахографа</Button>
-                <Button style={styles.transportFormButton} mode="contained" onPress={() => console.log('Pressed')} disabled={true}>Заправки</Button>
-                <Button style={styles.transportFormButton} mode="contained" onPress={() => console.log('Pressed')} disabled={true}>Ремонт</Button>
+                <Button compact={true} style={styles.transportFormButton} mode="contained" onPress={() => goToForm('Техподдержка', 1)}>Техподдержка</Button>
+                <Button compact={true} style={styles.transportFormButton} mode="contained" onPress={() => goToForm('Заказать мониторнинг', 2)}>Заказать мониторнинг</Button>
+                <Button compact={true} style={styles.transportFormButton} mode="contained" onPress={() => goToForm('Заказ или ремонт тахографа', 3)}>Заказ или ремонт тахографа</Button>
+                <Button compact={true} style={styles.transportFormButton} mode="contained" onPress={() => console.log('Pressed')} disabled={true}>Заправки</Button>
+                <Button compact={true} style={styles.transportFormButton} mode="contained" onPress={() => console.log('Pressed')} disabled={true}>Ремонт</Button>
             </ScrollView>
         </View>
     )

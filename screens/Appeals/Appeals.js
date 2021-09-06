@@ -27,6 +27,10 @@ const Appeals = ({ dispatch, navigation, jwt, transports, transports_loading, tr
         dispatch(transportActions.getTransports(jwt)).then(() => { setLoading(false) })
     }, []);
 
+    const goToForm = (title, theme) => {
+        navigation.navigate('AppealsFormScreen', { title: title, theme: theme, ts: null })
+    }
+
     const EmptyTSListComponent = () => {
         return (
             <View style={{
@@ -40,17 +44,17 @@ const Appeals = ({ dispatch, navigation, jwt, transports, transports_loading, tr
             }}>
                 <Paragraph style={{ textAlign: 'center', marginVertical: 30 }}>Транспортные средсва не найдены.</Paragraph >
                 <ScrollView style={styles.transportFormButtonContainer}>
-                    <Button compact={true} style={styles.transportFormButton} mode="contained" onPress={() => console.log('Pressed')}>Техподдержка</Button>
-                    <Button compact={true} style={styles.transportFormButton} mode="contained" onPress={() => console.log('Pressed')}>Заказать мониторнинг</Button>
-                    <Button compact={true} style={styles.transportFormButton} mode="contained" onPress={() => console.log('Pressed')}>Заказ или ремонт тахографа</Button>
-                    <Button compact={true} style={styles.transportFormButton} mode="contained" onPress={() => console.log('Pressed')}>Свободное обращение</Button>
+                    <Button compact={true} style={styles.transportFormButton} mode="contained" onPress={() => goToForm('Техподдержка', 1)}>Техподдержка</Button>
+                    <Button compact={true} style={styles.transportFormButton} mode="contained" onPress={() => goToForm('Заказать мониторнинг', 2)}>Заказать мониторнинг</Button>
+                    <Button compact={true} style={styles.transportFormButton} mode="contained" onPress={() => goToForm('Заказ или ремонт тахографа', 3)}>Заказ или ремонт тахографа</Button>
+                    <Button compact={true} style={styles.transportFormButton} mode="contained" onPress={() => goToForm('Свободное обращение', 6)}>Свободное обращение</Button>
                 </ScrollView>
             </View>
         );
     }
 
     if (loading || transports_loading) return <Loading />
-    if (transports_error !== null) return <Alert message={transports_error} onRefreshError={onRefreshError} />
+    if (transports_error !== null) return <Alert message={transports_error} />
     return (
         <View style={{ flex: 1 }}>
             <Searchbar
