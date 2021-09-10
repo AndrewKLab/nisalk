@@ -45,7 +45,23 @@ function validateToken(token) {
   return axios(config)
 }
 
-function logout() {
-  return AsyncStorage.removeItem('user');
+function logout(token) {
+
+  return getDiviceInfo().then((res) => {
+    var formdata = new FormData();
+    formdata.append('mac', res.mac)
+    var config = {
+      method: 'post',
+      url: `${configApi.apiUrl}/logout`,
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      data: formdata
+    };
+    return axios(config).then(()=>{
+      AsyncStorage.removeItem('user');
+    })
+  });
+
 }
 

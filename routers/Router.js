@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -28,6 +28,7 @@ export const MainNavigator = ({ }) => {
         dispatch(userActions.validateToken(result, null, true, setInitialRouteName))
       }
     });
+
   }, []);
 
   if (initialRouteName === "") { return null }
@@ -38,12 +39,12 @@ export const MainNavigator = ({ }) => {
     <NavigationContainer>
       <MainStackNavigator.Navigator initialRouteName={initialRouteName}>
         <MainStackNavigator.Screen
-          options={{ headerShown: false }}
+          options={{ headerShown: false, gesturesEnabled: false }}
           name="Login"
           component={LoginScreen}
         />
         <MainStackNavigator.Screen
-          options={{ headerShown: false }}
+          options={({ navigation, route }) => ({ headerShown: false, gesturesEnabled: false, })}
           name="BottomTabNavigator"
           component={BottomTabNavigator}
         />
@@ -53,10 +54,12 @@ export const MainNavigator = ({ }) => {
 }
 
 const Tab = createBottomTabNavigator();
-const BottomTabNavigator = ({ dispatch }) => {
+const BottomTabNavigator = ({ dispatch, route, navigation }) => {
+
+
   return (
     <Tab.Navigator
-      initialRouteName="MyTasks"
+      initialRouteName={route.params !== undefined ? route.params.screen : "MyTasks"}
       tabBarOptions={{
         activeTintColor: '#fff',
         inactiveTintColor: 'rgba(255, 255, 255, 0.54)',
@@ -141,8 +144,6 @@ const AppealsMapStateToProps = (state) => {
 const connectedAppealsNavigator = connect(AppealsMapStateToProps)(AppealsNavigator);
 
 
-
-
 const MyTasksStackNavigator = createStackNavigator();
 const MyTasks = ({ }) => {
   const screenOptions = (navigation, route) => {
@@ -163,7 +164,7 @@ const MyTasks = ({ }) => {
         component={ReqestsScreen}
       />
       <MyTasksStackNavigator.Screen
-        options={({ navigation, route }) => ({ title: `Заявка №${route.params.request}` })}
+        options={({ navigation, route }) => ({ title: `Заявка №${route.params.task_lk_id}` })}
         name="ReqestСhat"
         component={ReqestСhatScreen}
       />
@@ -204,7 +205,7 @@ const TSNavigator = ({ }) => {
         component={TSItem}
       />
       <TSStackNavigator.Screen
-        options={({ navigation, route }) => ({ title: 'НИСА lk' })}
+        options={({ navigation, route }) => ({ title: route.params.title })}
         name="TSFormScreen"
         component={TSForm}
       />

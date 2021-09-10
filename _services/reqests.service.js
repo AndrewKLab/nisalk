@@ -4,6 +4,7 @@ import FormData from 'form-data';
 
 export const reqestsService = {
   getReuests,
+  getArchiveReuests,
   getReuestMessages,
   sendMessage,
   readMessages,
@@ -13,7 +14,7 @@ export const reqestsService = {
 function getReuests(token) {
   var config = {
     method: 'get',
-    url: `${configApi.apiUrl}/app/requests`,
+    url: `${configApi.apiUrl}/app/requests/work`,
     headers: {
       'Authorization': `Bearer ${token}`
     },
@@ -22,10 +23,22 @@ function getReuests(token) {
   return axios(config)
 }
 
-function getReuestMessages(token, req) {
+function getArchiveReuests(token) {
   var config = {
     method: 'get',
-    url: `${configApi.apiUrl}/app/messages/${req}`,
+    url: `${configApi.apiUrl}/app/requests/archive`,
+    headers: {
+      'Authorization': `Bearer ${token}`
+    },
+  };
+
+  return axios(config)
+}
+
+function getReuestMessages(token, req, offset, limit) {
+  var config = {
+    method: 'get',
+    url: `${configApi.apiUrl}/app/messages/lazyload/${req}/${offset}/${limit}`,
     headers: {
       'Authorization': `Bearer ${token}`
     },
@@ -80,7 +93,7 @@ function createRequest(token, theme, message, org_id, mark, model, number, regio
   const fileToUpload = files;
   const data = new FormData();
   if (files.length > 0) {
-    console.log(files);
+    console.log(token, theme, message, org_id, mark, model, number, region, files);
     for (var i = 0; i < fileToUpload.length; i++) {
       data.append('file[]', fileToUpload[i]);
     }

@@ -1,7 +1,6 @@
 import { userConstants } from '../_constants';
 import { auntificationService } from '../_services';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
 
 
 export const userActions = {
@@ -40,9 +39,24 @@ function signin(phonenumber, password, navigation) {
   }
 }
 
-function logout(navigation) {
-  auntificationService.logout().then(() => navigation.navigate('Login'));
-  return { type: userConstants.LOGOUT };
+function logout(token, navigation) {
+
+  return (dispatch) => {
+    return auntificationService.logout(token).then(() => {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      });
+      dispatch(clear());
+    }).catch(function (error) {
+      console.log(error.response.data.message);
+    });
+  };
+
+  function clear() {
+    return { type: userConstants.LOGOUT };
+  }
+
 }
 
 function validateToken(jwt, navigation, firstlogin, setscreen) {
@@ -56,9 +70,12 @@ function validateToken(jwt, navigation, firstlogin, setscreen) {
         };
         dispatch(success(user));
         if (firstlogin) {
-          setscreen('BottomTabNavigator')
+          setscreen('BottomTabNavigator');
         } else {
-          navigation.navigate('BottomTabNavigator')
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'BottomTabNavigator' }],
+          });
         }
       }
       ).catch(function (error) {

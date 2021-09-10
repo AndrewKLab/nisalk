@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Alert, Text, TouchableOpacity } from "react-native";
 import { Surface, ProgressBar } from 'react-native-paper';
 import { styles } from "../_styles/styles";
@@ -10,6 +10,17 @@ export const File = ({ url, title, style, mb, index, files }) => {
 
 
     const [downloadProgress, setDownloadProgress] = useState(0);
+    const [isDownloaded, setIsDownloaded] = useState(false);
+
+    useEffect(() => {
+        existsFile();
+    }, []);
+
+    const existsFile = async () => {
+         if(await RNFS.exists(`${RNFS.ExternalDirectoryPath}/${title}`)){
+            setIsDownloaded(true);
+         }
+    }
 
     const downloadFile = async () => {
         let downloadedFilesCount = 0;
@@ -46,6 +57,7 @@ export const File = ({ url, title, style, mb, index, files }) => {
              }
             }).promise;
             setDownloadProgress((downloadedFilesCount) * 100);
+            setIsDownloaded(true);
         }
 
         // if (downloadedBooksCount == booksCount) {
@@ -55,7 +67,7 @@ export const File = ({ url, title, style, mb, index, files }) => {
     }
 
     return (
-        <TouchableOpacity key={index} style={[styles.file, { marginBottom: mb, }]} onPress={downloadFile}>
+        <TouchableOpacity key={index} style={[styles.file, { marginBottom: mb, backgroundColor: isDownloaded ? '#8CB7FF' : "#FFFFFF" }]} onPress={downloadFile}>
             <Icon name="file" style={styles.fileIcon} color={'#020202'} />
             <Text style={[styles.fileText, style]} textBreakStrategy={'simple'}>
                 {title.slice(11)}

@@ -1,13 +1,9 @@
-import { transportConstants } from '../_constants';
+import { transportConstants, userConstants } from '../_constants';
 
 const initialState = {
   transports_loading: false,
   transports_error: null,
   transports: [],
-
-  create_reqest_loading: false,
-  create_reqest_error: null,
-  create_reqest_status: '',
 };
 
 export function transport(state = initialState, action) {
@@ -33,6 +29,10 @@ export function transport(state = initialState, action) {
         transports_error: action.error,
       };
 
+
+    //LOGOUT
+    case userConstants.LOGOUT:
+      return initialState;
     default:
       return state;
   }

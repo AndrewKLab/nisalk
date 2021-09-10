@@ -1,16 +1,20 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { SafeAreaView, View, Keyboard, FlatList, Image } from 'react-native';
-import { TextInput, Text, IconButton, Surface, Badge } from 'react-native-paper';
+import { TextInput, Text, IconButton, Surface, ActivityIndicator } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { styles } from '../_styles/styles';
 import { reqestsActions } from '../_actions';
-import { Loading, Message } from '../_components';
+import { Loading, Alert, Message } from '../_components';
 import EmojiBoard from 'react-native-emoji-board';
 import DocumentPicker from 'react-native-document-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 
-const ReqestСhatScreen = ({ dispatch, jwt, request_messages, route, user }) => {
+const ReqestСhatScreen = ({ dispatch, route, user, jwt, request_messages, request_messages_loading, request_messages_error, request_messages_is_end }) => {
+  const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [offset, setOffset] = useState(0);
+  const [limit, setLimit] = useState(10);
   const [show, showEmo] = useState(false);
   const [message, onChangeMessage] = useState('');
   const [numberOfLines, setNumberOfLines] = useState(1);
@@ -18,17 +22,19 @@ const ReqestСhatScreen = ({ dispatch, jwt, request_messages, route, user }) => 
   const itemHeights = [];
   const input = useRef(null)
   const messlist = useRef(null);
+
   const onClick = emoji => {
     onChangeMessage(message + emoji.code)
   };
 
-  const item = request_messages;
+  const { task_lk_id } = route.params;
   useEffect(() => {
-    const o_mess_arr = request_messages.messages.filter(mess => mess.type === "o");
-    if (o_mess_arr.length > 0) {
-      const o_mess = o_mess_arr[o_mess_arr.length - 1];
-      dispatch(reqestsActions.readMessages(jwt, o_mess.type, o_mess.request_id, o_mess.o_id));
-    }
+    dispatch(reqestsActions.getReuestMessages(jwt, task_lk_id, offset, limit)).then(() => {
+      setLoading(false);
+      setOffset(offset + limit);
+    })
+
+
   }, []);
 
   const typeText = (text) => {
@@ -60,7 +66,7 @@ const ReqestСhatScreen = ({ dispatch, jwt, request_messages, route, user }) => 
   }
 
   const sendMessage = () => {
-    dispatch(reqestsActions.sendMessage(jwt, message, item.task_lk_id, user, fileList)).then(() => {
+    dispatch(reqestsActions.sendMessage(jwt, message, request_messages.task_lk_id, user, fileList)).then(() => {
       scrollToIndex(request_messages.messages.length - 1)
       onChangeMessage('');
       setFileList([])
@@ -85,7 +91,7 @@ const ReqestСhatScreen = ({ dispatch, jwt, request_messages, route, user }) => 
         console.log('Canceled from multiple doc picker');
       }
       else {
-        alert('Unknown Error: ' + JSON.stringify(err));
+        console.log('Unknown Error: ' + JSON.stringify(err));
         throw err;
       }
     }
@@ -106,36 +112,52 @@ const ReqestСhatScreen = ({ dispatch, jwt, request_messages, route, user }) => 
     return { length: 100, offset: 100 * index, index }
   }
 
+  const onScrollMessages = (e) => {
+    if (e.nativeEvent.contentOffset.y < 50 && loadingMore === false && !request_messages_is_end) {
+      setLoadingMore(true);
+      dispatch(reqestsActions.getMoreReuestMessages(jwt, task_lk_id, offset, limit)).then(() => {
+        setLoadingMore(false);
+        setOffset(offset + limit);
+      })
+    }
 
+  }
+
+
+  if (loading || request_messages_loading) return <Loading />
+  if (request_messages_error !== null) return <Alert message={request_messages_error} />
 
   return (
     <SafeAreaView style={{ flexDirection: "column", flex: 1, }}>
       <View style={[styles.listitemChat]}>
-        <View style={[styles.listitemTop, { borderBottomWidth: item.task_lk_mark || item.task_lk_model || item.task_lk_number ? 1 : 0 }]}>
+        <View style={[styles.listitemTop, { borderBottomWidth: request_messages.task_lk_mark || request_messages.task_lk_model || request_messages.task_lk_number ? 1 : 0 }]}>
           <View style={styles.listitemTextFT}>
-            <Text style={[styles.listitemTextTitle, {width: '17%'}]}>№{item.task_lk_id} </Text>
-            <Text style={[{width: '83%', textAlign: 'right'}]}>{item.task_lk_name}</Text>
+            <Text style={[styles.listitemTextTitle, { width: '17%' }]}>№{request_messages.task_lk_id} </Text>
+            <Text style={[{ width: '83%', textAlign: 'right' }]}>{request_messages.task_lk_name}</Text>
           </View>
         </View>
-        {item.task_lk_mark || item.task_lk_model || item.task_lk_number ?
+        {request_messages.task_lk_mark || request_messages.task_lk_model || request_messages.task_lk_number ?
           <View style={styles.listitemCenter}>
-            {item.task_lk_mark && <View style={styles.listitemText}><Text style={styles.listitemTextTitle}>Марка: </Text><Text style={{ color: '#020202' }}>{item.task_lk_mark} </Text></View>}
-            {item.task_lk_model && <View style={styles.listitemText}><Text style={styles.listitemTextTitle}>Модель: </Text><Text style={{ color: '#020202' }}>{item.task_lk_model} </Text></View>}
-            {item.task_lk_number && <View style={styles.listitemText}><Text style={styles.listitemTextTitle}>Номер: </Text><Text style={{ color: '#020202' }}>{item.task_lk_number}</Text></View>}
+            {request_messages.task_lk_mark && <View style={styles.listitemText}><Text style={styles.listitemTextTitle}>Марка: </Text><Text style={{ color: '#020202' }}>{request_messages.task_lk_mark} </Text></View>}
+            {request_messages.task_lk_model && <View style={styles.listitemText}><Text style={styles.listitemTextTitle}>Модель: </Text><Text style={{ color: '#020202' }}>{request_messages.task_lk_model} </Text></View>}
+            {request_messages.task_lk_number && <View style={styles.listitemText}><Text style={styles.listitemTextTitle}>Номер: </Text><Text style={{ color: '#020202' }}>{request_messages.task_lk_number}</Text></View>}
           </View>
           : null
         }
-        {item.task_lk_status && <View style={styles.listitemBottom}><Text style={styles.listitemText}><Text style={styles.listitemTextTitle}>Статус заявки: </Text>{item.task_lk_status}</Text></View>}
+        {request_messages.task_lk_status && <View style={styles.listitemBottom}><Text style={styles.listitemText}><Text style={styles.listitemTextTitle}>Статус заявки: </Text>{request_messages.task_lk_status}</Text></View>}
       </View>
 
       <View style={{ justifyContent: 'space-between', flex: 1 }}>
 
         <FlatList
           ref={messlist}
+          ListHeaderComponent={loadingMore && <Loading style={{ backgroundColor: '#f2f2f2', height: 50 }} />}
           data={request_messages.messages}
-          initialScrollIndex={request_messages.messages.length - 1}
           renderItem={renderItem}
+
           getItemLayout={getItemLayout}
+          onScroll={(e) => onScrollMessages(e)}
+          initialScrollIndex={request_messages.messages.length >= 4 ? request_messages.messages.length - 1 : 0}
           keyExtractor={(item, index) => index}
         />
         {/* {request_messages.unread_messages > 0 &&
@@ -201,6 +223,7 @@ const ReqestСhatScreen = ({ dispatch, jwt, request_messages, route, user }) => 
           <IconButton
             icon="send"
             size={20}
+            disabled={message === ""}
             onPress={() => sendMessage()}
           />
 
@@ -217,11 +240,14 @@ const ReqestСhatScreen = ({ dispatch, jwt, request_messages, route, user }) => 
 
 const mapStateToProps = (state) => {
   const { jwt, user } = state.authentication;
-  const { request_messages } = state.requests;
+  const { request_messages, request_messages_loading, request_messages_error, request_messages_is_end } = state.requests;
   return {
     jwt,
     user,
     request_messages,
+    request_messages_loading,
+    request_messages_error,
+    request_messages_is_end
   };
 };
 

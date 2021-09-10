@@ -17,15 +17,11 @@ export const styles = StyleSheet.create({
   },
 
   textInput: {
-    backgroundColor: 'rgba(255,255,255,0.4)',
-    borderRadius: 5,
-    borderColor: 'rgb(197, 197, 197)',
-    borderWidth: 0.5,
-    width: '100%',
-    height: 50,
-    padding: 8,
-    marginBottom: 12,
-    color: '#020202',
+    backgroundColor: '#fff',
+  },
+
+  textInputContainer: {
+    marginBottom: 8,
   },
 
   button: {
@@ -110,7 +106,8 @@ export const styles = StyleSheet.create({
     marginVertical: 5,
     borderColor: "#e0e0e0",
     borderWidth: 1,
-    borderRadius: 8
+    borderRadius: 8,
+    backgroundColor: '#fff'
   },
   listitemTop: {
     padding: 8,
@@ -331,7 +328,7 @@ export const styles = StyleSheet.create({
   },
 
   //TSItemScreen
-  transportItemContainer:{
+  transportItemContainer: {
     flex: 1
   },
 
@@ -351,21 +348,32 @@ export const styles = StyleSheet.create({
 
   },
 
-  transportFormButtonContainer: { 
-    padding: 8 
+  transportFormButtonContainer: {
+    padding: 8
   },
 
-  transportFormButton: { 
-    marginBottom: 12 
+  transportFormButton: {
+    marginBottom: 12,
+  },
+
+  transportFormButtonContent: {
+    height: 80,
+    justifyContent: 'center',
+    backgroundColor: '#00a2e8',
+  },
+
+  transportFormButtonContentDis: {
+    height: 80,
+    justifyContent: 'center',
   },
 
   //form
 
-  formContainer:{
-    padding: 8
+  formContainer: {
+    padding: 8,
   },
 
-  formOrgContainer:{
+  formOrgContainer: {
     padding: 8,
     borderColor: "#e0e0e0",
     borderWidth: 1,
@@ -374,7 +382,7 @@ export const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
 
-  formInputsContainer:{
+  formInputsContainer: {
     padding: 8,
     borderColor: "#e0e0e0",
     borderWidth: 1,
@@ -383,8 +391,10 @@ export const styles = StyleSheet.create({
   },
 
   formInput: {
-    marginBottom: 8
-  }
+    marginBottom: 8,
+    backgroundColor: '#fff'
+  },
+
 
 });
 
