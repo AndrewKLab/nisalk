@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { SafeAreaView, View, Keyboard, FlatList, Image } from 'react-native';
-import { TextInput, Text, IconButton, Surface, ActivityIndicator } from 'react-native-paper';
+import {  Text, IconButton, Surface, ActivityIndicator, TextInput } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { styles } from '../_styles/styles';
 import { reqestsActions } from '../_actions';
@@ -18,6 +18,7 @@ const ReqestСhatScreen = ({ dispatch, route, user, jwt, request_messages, reque
   const [show, showEmo] = useState(false);
   const [message, onChangeMessage] = useState('');
   const [numberOfLines, setNumberOfLines] = useState(1);
+  const [inputHeight, setInputHeight] = useState(50);
   const [fileList, setFileList] = useState([]);
   const itemHeights = [];
   const input = useRef(null)
@@ -38,7 +39,13 @@ const ReqestСhatScreen = ({ dispatch, route, user, jwt, request_messages, reque
   }, []);
 
   const typeText = (text) => {
-    onChangeMessage(text)
+    
+    const lines = text.split("\n");
+
+    if (lines.length <= (4 || 1)) {
+     // typeText(text);
+      onChangeMessage(text)
+    }
     //if(numberOfLines <= 3){setNumberOfLines(numberOfLines + 1)}
   }
 
@@ -199,22 +206,25 @@ const ReqestСhatScreen = ({ dispatch, route, user, jwt, request_messages, reque
             size={20}
             onPress={() => selectfileList()}
           />
+          <View style={{flex: 1}}>
           <TextInput
+            onLayout={(s)=>console.log(s.nativeEvent)}
             ref={input}
-            style={[styles.chatInput, numberOfLines < 2 && { height: 40 }]}
+            multiline
+            style={[styles.chatInput], {maxHeight: 120,}}
             mode={'flat'}
             onChangeText={(text) => typeText(text)}
+            onChange={(s)=>console.log(s.nativeEvent)}
             value={message}
             placeholder={'Ваше сообщение'}
             underlineColor={'f7f7f9'}
-            multiline={false}
             dense={true}
             onFocus={() => {
               scrollToIndex(request_messages.messages.length - 1);
               showEmo(false)
             }}
-            numberOfLines={numberOfLines}
           />
+          </View>
           <IconButton
             icon="emoticon-outline"
             size={20}

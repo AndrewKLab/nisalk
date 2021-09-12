@@ -150,7 +150,7 @@ const AppealsForm = ({ dispatch, navigation, jwt, route, user, requests_type }) 
                         />
                     </>
                 }
-                <Button style={styles.formInput} icon="file" mode="outlined" disabled={selectedValue === ''} onPress={selectfileList}>Прикрепить файлы</Button>
+                <Button style={[styles.formInput, {marginBottom: 24}]} icon="file" mode="outlined" disabled={selectedValue === ''} onPress={selectfileList}>Прикрепить файлы</Button>
                 {fileList.length > 0 &&
                     <View style={[styles.filesBoard, { marginBottom: 8 }]}>
                         <FlatList

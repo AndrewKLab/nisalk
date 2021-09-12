@@ -6,7 +6,11 @@ import { Provider as PaperProvider } from 'react-native-paper';
 //screens
 import {MainNavigator} from './routers';
 
+
+
 function App() {
+
+
 
 
   return (

@@ -244,9 +244,11 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#f7f7f9',
     alignItems: 'flex-end',
+    justifyContent: 'flex-start',
     padding: 5
   },
   chatInput: {
+    minWidth: 700,
     flex: 1,
     borderRadius: 0,
   },
@@ -394,6 +396,8 @@ export const styles = StyleSheet.create({
     marginBottom: 8,
     backgroundColor: '#fff'
   },
+
+  
 
 
 });

@@ -14,6 +14,9 @@ import { LoginScreen, ReqestsScreen, ReqestСhatScreen, Appeals, AppealsItem, Ap
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import PushNotification  from "react-native-push-notification";
+
+
 const MainStackNavigator = createStackNavigator();
 export const MainNavigator = ({ }) => {
   const dispatch = useDispatch();
@@ -55,6 +58,29 @@ export const MainNavigator = ({ }) => {
 
 const Tab = createBottomTabNavigator();
 const BottomTabNavigator = ({ dispatch, route, navigation }) => {
+
+  // useEffect(() => {
+  //   PushNotification.configure({
+  //     onRegister: function (token) {
+  //       console.log("TOKEN:", token);
+  //     },
+  //     onNotification: function (notification) {
+  //      // navigation.navigate('ReqestСhat', { task_lk_id: notification.data.task })
+  //      console.log('нажал')
+  //     },
+
+  //     permissions: {
+  //       alert: true,
+  //       badge: true,
+  //       sound: true,
+  //     },
+  //     popInitialNotification: true,
+  //     requestPermissions: true,
+  //   });
+
+  // }, []);
+
+
 
 
   return (

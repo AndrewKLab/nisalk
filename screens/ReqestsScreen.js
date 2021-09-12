@@ -40,11 +40,14 @@ const ReqestsScreen = ({ dispatch, jwt, requests, requests_loading, requests_err
       const task = remoteMessage.data.task;
       const message = remoteMessage.data.message;
 
-      PushNotification.localNotification({
-        channelId: "1337",
-        title: title,
-        message: body
-      });
+      // PushNotification.localNotification({
+      //   channelId: "651578",
+      //   title: title,
+      //   message: body,
+      //   data:{
+      //     task: task
+      //   }       
+      // });
 
       dispatch(reqestsActions.addMessage(task, message))
 
@@ -73,19 +76,34 @@ const ReqestsScreen = ({ dispatch, jwt, requests, requests_loading, requests_err
 
   const onRefresh = () => {
     setRefreshing(true);
+
     if (!requests_loading) {
-      dispatch(reqestsActions.getReuests(jwt)).then(() => {
-        setRefreshing(false);
-      });
+      if (requestsType) {
+        dispatch(reqestsActions.getReuests(jwt)).then(() => {
+          setRefreshing(false);
+        });
+      } else {
+        dispatch(reqestsActions.getArchiveReuests(jwt)).then(() => {
+          setRefreshing(false);
+        });
+      }
+
     }
   };
 
   const onRefreshError = () => {
     setLoading(true);
     if (!requests_loading) {
-      dispatch(reqestsActions.getReuests(jwt)).then(() => {
-        setLoading(false);
-      });
+      if (requestsType) {
+        dispatch(reqestsActions.getReuests(jwt)).then(() => {
+          setLoading(false);
+        });
+      } else {
+        dispatch(reqestsActions.getArchiveReuests(jwt)).then(() => {
+          setLoading(false);
+        });
+      }
+
     }
   };
 
@@ -113,7 +131,7 @@ const ReqestsScreen = ({ dispatch, jwt, requests, requests_loading, requests_err
         placeholder="Поиск"
         onChangeText={onChangeSearch}
         value={searchQuery}
-        style={{elevation: 0}}
+        style={{ elevation: 0 }}
       />
       <View style={{ flexDirection: 'row', padding: 8, justifyContent: 'space-around', backgroundColor: '#fff', elevation: 2 }}>
         <Button mode={requestsType ? "contained" : "outlined"} style={{ elevation: 0 }} onPress={() => changeRequestsType()}>Открытые</Button>
