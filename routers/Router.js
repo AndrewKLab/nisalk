@@ -25,6 +25,7 @@ export const MainNavigator = ({ }) => {
   useEffect(() => {
     AsyncStorage.getItem('user').then((result) => {
       dispatch(userActions.setInit(result))
+      
       if (result === null) {
         setInitialRouteName("Login")
       } else {

@@ -4,7 +4,7 @@ import { transportConstants } from '../_constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const transportActions = {
-    getTransports
+  getTransports
 };
 
 
@@ -15,11 +15,19 @@ function getTransports(jwt) {
     return transportService.getTransports(jwt)
       .then(
         (response) => {
-            dispatch(success(response.data))
+          AsyncStorage.setItem('transports', JSON.stringify(response.data));
+          dispatch(success(response.data))
         }
       )
       .catch(error => {
-        dispatch(failure(error.response.data.message))
+        AsyncStorage.getItem('transports').then((value) => {
+          if (value !== null) {
+            dispatch(success(JSON.parse(value)))
+          } else {
+            dispatch(failure(error.message))
+          }
+        })
+        
       });
   };
 

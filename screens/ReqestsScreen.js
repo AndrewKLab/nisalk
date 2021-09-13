@@ -6,13 +6,14 @@ import { styles } from '../_styles/styles';
 import { reqestsActions } from '../_actions';
 import { Loading, ListItem, Alert } from '../_components';
 import messaging from '@react-native-firebase/messaging';
-import PushNotification from "react-native-push-notification";
+//import NotificationSounds, { playSampleSound } from 'react-native-notification-sounds';
+import notifee, {EventType} from '@notifee/react-native';
 
 
 const ReqestsScreen = ({ dispatch, jwt, requests, requests_loading, requests_error, navigation }) => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [requestsType, setRequestsType] = useState(true);
+  const [requestsType, setRequestsType] = useState('opened');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchRequestsList, setSearchRequestsList] = useState('');
 
@@ -32,7 +33,15 @@ const ReqestsScreen = ({ dispatch, jwt, requests, requests_loading, requests_err
 
   useEffect(() => {
     dispatch(reqestsActions.getReuests(jwt)).then(() => setLoading(false))
-    //console.log(navigation.navigate('Reqests'))
+
+    notifee.onForegroundEvent(({ type, detail }) => {
+      switch (type) {
+        case EventType.PRESS:
+          navigation.navigate('ReqestСhat', { task_lk_id: detail.notification.data.task })
+          break;
+      }
+
+    });
 
     messaging().onMessage(remoteMessage => {
       const title = remoteMessage.notification.title;
@@ -40,19 +49,21 @@ const ReqestsScreen = ({ dispatch, jwt, requests, requests_loading, requests_err
       const task = remoteMessage.data.task;
       const message = remoteMessage.data.message;
 
-      // PushNotification.localNotification({
-      //   channelId: "651578",
-      //   title: title,
-      //   message: body,
-      //   data:{
-      //     task: task
-      //   }       
-      // });
+      notifee.displayNotification({
+        title: title,
+        body: body,
+        data: remoteMessage.data,
+        android: {
+          channelId: 'foreground-notifications',
+          sound: 'default',
+          smallIcon: 'ic_launcher_round',
+        },
+      });
 
-      dispatch(reqestsActions.addMessage(task, message))
+      dispatch(reqestsActions.addMessage(task, message, remoteMessage.data));
 
-      console.log('A new FCM message arrived!', JSON.stringify(remoteMessage.data));
 
+      console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
     });
 
     messaging().onNotificationOpenedApp(remoteMessage => {
@@ -111,9 +122,9 @@ const ReqestsScreen = ({ dispatch, jwt, requests, requests_loading, requests_err
     navigation.navigate('ReqestСhat', { task_lk_id: task_lk_id })
   }
 
-  const changeRequestsType = () => {
-    setRequestsType(!requestsType)
-    if (!requestsType) {
+  const changeRequestsType = (btn) => {
+    setRequestsType(btn);
+    if (btn === 'opened') {
       setLoading(true);
       dispatch(reqestsActions.getReuests(jwt)).then(() => setLoading(false));
     } else {
@@ -134,8 +145,8 @@ const ReqestsScreen = ({ dispatch, jwt, requests, requests_loading, requests_err
         style={{ elevation: 0 }}
       />
       <View style={{ flexDirection: 'row', padding: 8, justifyContent: 'space-around', backgroundColor: '#fff', elevation: 2 }}>
-        <Button mode={requestsType ? "contained" : "outlined"} style={{ elevation: 0 }} onPress={() => changeRequestsType()}>Открытые</Button>
-        <Button mode={!requestsType ? "contained" : "outlined"} style={{ elevation: 0 }} onPress={() => changeRequestsType()}>Закрытые</Button>
+        <Button mode={requestsType === 'opened' ? "contained" : "outlined"} style={{ elevation: 0, flex: 1, marginRight: 8 }} onPress={() => {changeRequestsType('opened')}}>Открытые</Button>
+        <Button mode={requestsType === 'closed' ? "contained" : "outlined"} style={{ elevation: 0, flex: 1 }} onPress={() => { changeRequestsType('closed')}}>Закрытые</Button>
       </View>
       {loading || requests_loading ? <Loading /> :
         requests_error !== null ? <Alert message={requests_error} onRefreshError={onRefreshError} /> :

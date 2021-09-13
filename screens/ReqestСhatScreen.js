@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { SafeAreaView, View, Keyboard, FlatList, Image } from 'react-native';
-import {  Text, IconButton, Surface, ActivityIndicator, TextInput } from 'react-native-paper';
+import { SafeAreaView, View, Keyboard, FlatList } from 'react-native';
+import { Text, IconButton, Surface, TextInput } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { styles } from '../_styles/styles';
 import { reqestsActions } from '../_actions';
@@ -17,108 +17,21 @@ const ReqestСhatScreen = ({ dispatch, route, user, jwt, request_messages, reque
   const [limit, setLimit] = useState(10);
   const [show, showEmo] = useState(false);
   const [message, onChangeMessage] = useState('');
-  const [numberOfLines, setNumberOfLines] = useState(1);
-  const [inputHeight, setInputHeight] = useState(50);
   const [fileList, setFileList] = useState([]);
-  const itemHeights = [];
   const input = useRef(null)
   const messlist = useRef(null);
 
-  const onClick = emoji => {
-    onChangeMessage(message + emoji.code)
-  };
 
   const { task_lk_id } = route.params;
+
   useEffect(() => {
     dispatch(reqestsActions.getReuestMessages(jwt, task_lk_id, offset, limit)).then(() => {
       setLoading(false);
       setOffset(offset + limit);
     })
-
-
   }, []);
 
-  const typeText = (text) => {
-    
-    const lines = text.split("\n");
-
-    if (lines.length <= (4 || 1)) {
-     // typeText(text);
-      onChangeMessage(text)
-    }
-    //if(numberOfLines <= 3){setNumberOfLines(numberOfLines + 1)}
-  }
-
-  const scrollToIndex = (index) => {
-    messlist.current.scrollToIndex({ animated: true, index: index });
-  }
-
-  const scrollToLastReadedMessage = () => {
-    const o_mess_arr = request_messages.messages.filter(mess => mess.type === "o");
-    const o_mess = o_mess_arr[o_mess_arr.length - 1]
-    const toMess = request_messages.messages.find(function (element) { if (element.o_id === o_mess.o_id) { return element } else { return false; } })
-    dispatch(reqestsActions.readMessages(jwt, o_mess.type, o_mess.request_id, o_mess.o_id))
-    messlist.current.scrollToItem({ animated: true, item: toMess })
-  }
-
-  const openEmoBoard = () => {
-    if (input.current.isFocused()) {
-      scrollToIndex(request_messages.messages.length - 1);
-      Keyboard.dismiss();
-      showEmo(!show);
-    } else {
-      scrollToIndex(request_messages.messages.length - 1);
-      showEmo(!show);
-    }
-  }
-
-  const sendMessage = () => {
-    dispatch(reqestsActions.sendMessage(jwt, message, request_messages.task_lk_id, user, fileList)).then(() => {
-      scrollToIndex(request_messages.messages.length - 1)
-      onChangeMessage('');
-      setFileList([])
-    })
-  }
-
-
-  const selectfileList = async () => {
-    try {
-      const results = await DocumentPicker.pickMultiple({
-        type: [DocumentPicker.types.allFiles],
-      });
-      for (const res of results) {
-        console.log('selectfileList() : ' + JSON.stringify(res));
-      }
-      // fileList.map((item, index)=> results.filter(file => item.name === file.name).length !== 0 ? : item)
-      // var fl = fileList.length === 0 ? results : fileList.push(results)
-      setFileList(results)
-    }
-    catch (err) {
-      if (DocumentPicker.isCancel(err)) {
-        console.log('Canceled from multiple doc picker');
-      }
-      else {
-        console.log('Unknown Error: ' + JSON.stringify(err));
-        throw err;
-      }
-    }
-  }
-
-  const dellFileFromfilelist = (file) => {
-    const nfl = fileList.filter(item => item.uri !== file.uri);
-    console.log(file.name, nfl)
-    setFileList(nfl)
-  }
-
-  const renderItem = ({ item, index }) => {
-    return <Message index={index} item={item} onLayout={object => itemHeights[index] = object.nativeEvent.layout.height} />
-  }
-
-
-  const getItemLayout = (data, index) => {
-    return { length: 100, offset: 100 * index, index }
-  }
-
+  //При положении скрола меньше 50 сделай lazy load следующих сообщений
   const onScrollMessages = (e) => {
     if (e.nativeEvent.contentOffset.y < 50 && loadingMore === false && !request_messages_is_end) {
       setLoadingMore(true);
@@ -127,9 +40,48 @@ const ReqestСhatScreen = ({ dispatch, route, user, jwt, request_messages, reque
         setOffset(offset + limit);
       })
     }
-
   }
 
+  //Открыть борд с эмоциями
+  const openEmoBoard = () => {
+    if (input.current.isFocused()) Keyboard.dismiss();
+    scrollToBottom();
+    showEmo(!show);
+  }
+
+  //Отправить сообщение
+  const sendMessage = () => {
+    dispatch(reqestsActions.sendMessage(jwt, message, request_messages.task_lk_id, user, fileList)).then(() => {
+      onChangeMessage('');
+      setFileList([])
+    })
+  }
+
+  //Выбрать фаил из файловой системы
+  const selectfileList = async () => {
+    try {
+      const selectedFiles = await DocumentPicker.pickMultiple({ type: [DocumentPicker.types.allFiles] });
+      setFileList(selectedFiles)
+    }
+    catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        console.log('Canceled from multiple doc picker', err);
+      }
+      else {
+        console.log('Unknown Error: ' + JSON.stringify(err));
+        throw err;
+      }
+    }
+  }
+
+  //Удалить фаил из списка выбранных файлов 
+  const dellFileFromfilelist = (file) => {
+    const nfl = fileList.filter(item => item.uri !== file.uri);
+    setFileList(nfl)
+  }
+
+  //Скролл в низ списка сообщений
+  const scrollToBottom = () => { messlist.current.scrollToIndex({ animated: true, index: 0 }) }
 
   if (loading || request_messages_loading) return <Loading />
   if (request_messages_error !== null) return <Alert message={request_messages_error} />
@@ -145,26 +97,29 @@ const ReqestСhatScreen = ({ dispatch, route, user, jwt, request_messages, reque
         </View>
         {request_messages.task_lk_mark || request_messages.task_lk_model || request_messages.task_lk_number ?
           <View style={styles.listitemCenter}>
-            {request_messages.task_lk_mark && <View style={styles.listitemText}><Text style={styles.listitemTextTitle}>Марка: </Text><Text style={{ color: '#020202' }}>{request_messages.task_lk_mark} </Text></View>}
-            {request_messages.task_lk_model && <View style={styles.listitemText}><Text style={styles.listitemTextTitle}>Модель: </Text><Text style={{ color: '#020202' }}>{request_messages.task_lk_model} </Text></View>}
-            {request_messages.task_lk_number && <View style={styles.listitemText}><Text style={styles.listitemTextTitle}>Номер: </Text><Text style={{ color: '#020202' }}>{request_messages.task_lk_number}</Text></View>}
+            {request_messages.task_lk_number && <Text>{request_messages.task_lk_number}</Text>}
+            {request_messages.task_lk_mark && <Text style={styles.listitemText}><Text >{request_messages.task_lk_mark && request_messages.task_lk_mark} </Text>{request_messages.task_lk_model && request_messages.task_lk_model}</Text>}
           </View>
           : null
         }
-        {request_messages.task_lk_status && <View style={styles.listitemBottom}><Text style={styles.listitemText}><Text style={styles.listitemTextTitle}>Статус заявки: </Text>{request_messages.task_lk_status}</Text></View>}
+        {request_messages.task_lk_status || request_messages.task_lk_time_create ?
+          <View style={styles.listitemBottom}>
+            {request_messages.task_lk_status && <Text style={styles.listitemText}><Text style={styles.listitemTextTitle}>Статус заявки: </Text>{request_messages.task_lk_status}</Text>}
+            {request_messages.task_lk_time_create && <Text style={styles.listitemText}><Text style={styles.listitemTextTitle}>Дата регистрации: </Text>{moment.unix(request_messages.task_lk_time_create).format("DD.MM.YYYY")}</Text>}
+          </View>
+          : null
+        }
       </View>
 
       <View style={{ justifyContent: 'space-between', flex: 1 }}>
 
         <FlatList
           ref={messlist}
-          ListHeaderComponent={loadingMore && <Loading style={{ backgroundColor: '#f2f2f2', height: 50 }} />}
+          inverted
+          ListFooterComponent={loadingMore && <Loading style={{ backgroundColor: '#f2f2f2', height: 50 }} />}
           data={request_messages.messages}
-          renderItem={renderItem}
-
-          getItemLayout={getItemLayout}
+          renderItem={({ item, index }) => <Message index={index} item={item} />}
           onScroll={(e) => onScrollMessages(e)}
-          initialScrollIndex={request_messages.messages.length >= 4 ? request_messages.messages.length - 1 : 0}
           keyExtractor={(item, index) => index}
         />
         {/* {request_messages.unread_messages > 0 &&
@@ -206,24 +161,22 @@ const ReqestСhatScreen = ({ dispatch, route, user, jwt, request_messages, reque
             size={20}
             onPress={() => selectfileList()}
           />
-          <View style={{flex: 1}}>
-          <TextInput
-            onLayout={(s)=>console.log(s.nativeEvent)}
-            ref={input}
-            multiline
-            style={[styles.chatInput], {maxHeight: 120,}}
-            mode={'flat'}
-            onChangeText={(text) => typeText(text)}
-            onChange={(s)=>console.log(s.nativeEvent)}
-            value={message}
-            placeholder={'Ваше сообщение'}
-            underlineColor={'f7f7f9'}
-            dense={true}
-            onFocus={() => {
-              scrollToIndex(request_messages.messages.length - 1);
-              showEmo(false)
-            }}
-          />
+          <View style={{ flex: 1 }}>
+            <TextInput
+              ref={input}
+              multiline
+              style={[styles.chatInput], { maxHeight: 120, }}
+              mode={'flat'}
+              onChangeText={(text) => onChangeMessage(text)}
+              value={message}
+              placeholder={'Ваше сообщение'}
+              underlineColor={'f7f7f9'}
+              dense={true}
+              onFocus={() => {
+                scrollToBottom();
+                showEmo(false)
+              }}
+            />
           </View>
           <IconButton
             icon="emoticon-outline"
@@ -239,7 +192,7 @@ const ReqestСhatScreen = ({ dispatch, route, user, jwt, request_messages, reque
 
         </View>
         <View style={{ height: show === false ? 0 : 'auto' }}>
-          <EmojiBoard containerStyle={{ position: 'relative' }} showBoard={show} onClick={onClick} />
+          <EmojiBoard containerStyle={{ position: 'relative' }} showBoard={show} onClick={emoji => onChangeMessage(message + emoji.code)} />
         </View>
 
       </View>

@@ -1,6 +1,6 @@
 import { requestsConstants } from '../_constants';
 import { reqestsService } from '../_services';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const reqestsActions = {
   getReuests,
@@ -18,10 +18,17 @@ function getReuests(jwt) {
     dispatch(request({ jwt }));
     return reqestsService.getReuests(jwt)
       .then(function (response) {
+        AsyncStorage.setItem('requests', JSON.stringify(response.data));
         dispatch(success(response.data));
       }
       ).catch(function (error) {
-        dispatch(failure(error.response.data.message));
+        AsyncStorage.getItem('requests').then((value) => {
+          if (value !== null) {
+            dispatch(success(JSON.parse(value)))
+          } else {
+            dispatch(failure(error.message))
+          }
+        })
       });
   };
 
@@ -41,10 +48,17 @@ function getArchiveReuests(jwt) {
     dispatch(request({ jwt }));
     return reqestsService.getArchiveReuests(jwt)
       .then(function (response) {
+        AsyncStorage.setItem('closerequests', JSON.stringify(response.data));
         dispatch(success(response.data));
       }
       ).catch(function (error) {
-        dispatch(failure(error.response.data.message));
+        AsyncStorage.getItem('closerequests').then((value) => {
+          if (value !== null) {
+            dispatch(success(JSON.parse(value)))
+          } else {
+            dispatch(failure(error.message))
+          }
+        })
       });
   };
 
@@ -68,7 +82,7 @@ function getReuestMessages(jwt, req, offset, limit) {
         dispatch(success(response.data));
         const o_mess_arr = response.data.messages.filter(mess => mess.type === "o");
         if (o_mess_arr.length > 0) {
-          const o_mess = o_mess_arr[o_mess_arr.length - 1];
+          const o_mess = o_mess_arr[0];
           dispatch(readMessages(jwt, o_mess.type, o_mess.request_id, o_mess.o_id))
         }
       }).catch(function (error) {
@@ -170,8 +184,8 @@ function readMessages(jwt, type, req, message) {
 
 }
 
-function addMessage(req, message) {
-  return { type: requestsConstants.ADD_MESSAGE, message, req };
+function addMessage(req, message, messagedata) {
+  return { type: requestsConstants.ADD_MESSAGE, message, req, messagedata };
 }
 
 function createRequest(token, theme, message, org_id, mark, model, number, region, files, openAlert, user, requests_type) {

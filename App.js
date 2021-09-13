@@ -7,12 +7,7 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import {MainNavigator} from './routers';
 
 
-
 function App() {
-
-
-
-
   return (
     <Provider store={store}>
       <PaperProvider theme={theme}>

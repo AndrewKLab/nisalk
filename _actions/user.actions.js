@@ -24,7 +24,8 @@ function signin(phonenumber, password, navigation) {
         }
       )
       .catch(error => {
-        dispatch(failure(error.response.data.message))
+        console.log(error)
+        //dispatch(failure(error.response.data.message))
       });
   };
 
@@ -79,9 +80,11 @@ function validateToken(jwt, navigation, firstlogin, setscreen) {
         }
       }
       ).catch(function (error) {
-        dispatch(failure(error.response.data.message));
-        if (firstlogin) {
+        dispatch(failure(error.message));
+        if (firstlogin && error.message !== 'Network Error') {
           setscreen('Login')
+        } else {
+          setscreen('BottomTabNavigator');
         }
       });
   };

@@ -60,6 +60,7 @@ const AppealsForm = ({ dispatch, navigation, jwt, route, user, requests_type }) 
     }
 
     const showModal = (error) => {
+        console.log(error)
         if(error){
             setSendError(error)
         }
@@ -73,6 +74,7 @@ const AppealsForm = ({ dispatch, navigation, jwt, route, user, requests_type }) 
     }
 
     const sendMessage = (theme, message, mark, model, number, fileList) => {
+        setSendError('')
         dispatch(reqestsActions.createRequest(jwt, theme, message, user !== undefined ? selectedValue : 0, mark, model, number, number.slice(6), fileList, showModal, user, requests_type))
     }
 

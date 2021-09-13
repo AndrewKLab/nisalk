@@ -77,6 +77,7 @@ function sendMessage(token, message, req, files) {
 }
 
 function readMessages(token, type, req, message) {
+  console.log(token, type, req, message)
   var config = {
     method: 'get',
     url: `${configApi.apiUrl}/app/message/read/${type}/${req}/${message}`,
