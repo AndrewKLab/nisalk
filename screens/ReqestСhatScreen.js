@@ -29,7 +29,7 @@ const ReqestСhatScreen = ({ dispatch, route, user, jwt, request_messages, reque
       setLoading(false);
       setOffset(offset + limit);
     })
-  }, []);
+  }, [task_lk_id]);
 
   //При положении скрола меньше 50 сделай lazy load следующих сообщений
   const onScrollMessages = (e) => {

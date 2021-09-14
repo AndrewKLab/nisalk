@@ -204,8 +204,13 @@ function createRequest(token, theme, message, org_id, mark, model, number, regio
         }
       })
       .catch(error => {
-        console.log(error)
-        //dispatch(failure(error.response.data.message))
+        if(error.response !== undefined){
+          dispatch(failure(error.response.data.message))
+          openAlert(error.response.data.message)
+        } else {
+          dispatch(failure(error.message))
+          openAlert(error.message)
+        }
       });
   };
 

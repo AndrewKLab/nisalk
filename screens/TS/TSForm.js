@@ -20,7 +20,7 @@ const TSForm = ({ dispatch, navigation, jwt, route, user, requests_type }) => {
     const [number, setNumber] = useState(ts !== null ? ts.lk_ts_reg_number : '');
     const [message, setMessage] = useState('');
     const [fileList, setFileList] = useState([]);
-    const [selectedValue, setSelectedValue] = useState(user.orgs !== undefined ? user.orgs.length > 1 ? '' : user.orgs[0].org_id : '');
+    const [selectedValue, setSelectedValue] = useState(user !== undefined && user.orgs !== undefined ? user.orgs.length > 1 ? '' : user.orgs[0].org_id : '');
     const [sendError, setSendError] = useState('');
 
     // useEffect(() => {
@@ -75,7 +75,7 @@ const TSForm = ({ dispatch, navigation, jwt, route, user, requests_type }) => {
 
     const sendMessage = (theme, message, mark, model, number, fileList) => {
         setSendError('');
-        dispatch(reqestsActions.createRequest(jwt, theme, message, user !== undefined ? user.orgs[0].org_id : 0, mark, model, number, number.slice(6), fileList, showModal, user, requests_type))
+        dispatch(reqestsActions.createRequest(jwt, theme, message, user !== undefined && user.orgs !== undefined ? user.orgs[0].org_id : 0, mark, model, number, number.slice(6), fileList, showModal, user, requests_type))
     }
 
 
@@ -83,7 +83,7 @@ const TSForm = ({ dispatch, navigation, jwt, route, user, requests_type }) => {
         <ScrollView style={styles.formContainer}>
             <View style={styles.formOrgContainer}>
                 <Caption>Организация</Caption>
-                {user !== undefined ? user.orgs.length > 1 ? 
+                {user !== undefined && user.orgs !== undefined ? user.orgs.length > 1 ? 
                 <View style={{  borderRadius: 2, borderWidth: 1.5, borderColor: '#a8a8a8',  }}>
                 <Picker
                     selectedValue={selectedValue}

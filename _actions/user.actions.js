@@ -24,8 +24,11 @@ function signin(phonenumber, password, navigation) {
         }
       )
       .catch(error => {
-        console.log(error)
-        //dispatch(failure(error.response.data.message))
+        if(error.response !== undefined){
+          dispatch(failure(error.response.data.message))
+        } else {
+          dispatch(failure(error.message))
+        }
       });
   };
 
@@ -69,6 +72,7 @@ function validateToken(jwt, navigation, firstlogin, setscreen) {
           jwt: jwt,
           user: response.data,
         };
+        AsyncStorage.setItem('userdata', JSON.stringify(response.data))
         dispatch(success(user));
         if (firstlogin) {
           setscreen('BottomTabNavigator');
@@ -80,10 +84,16 @@ function validateToken(jwt, navigation, firstlogin, setscreen) {
         }
       }
       ).catch(function (error) {
-        dispatch(failure(error.message));
         if (firstlogin && error.message !== 'Network Error') {
           setscreen('Login')
         } else {
+          AsyncStorage.getItem('userdata').then((value) => {
+            if (value !== null) {
+              dispatch(success(JSON.parse(value)))
+            } else {
+              dispatch(failure(error.message))
+            }
+          })
           setscreen('BottomTabNavigator');
         }
       });
