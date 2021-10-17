@@ -35,8 +35,8 @@ const TSItem = ({ dispatch, navigation, route }) => {
                 <Button compact={true} style={styles.transportFormButton} contentStyle={styles.transportFormButtonContent} mode="contained" onPress={() => goToForm('Техподдержка', 1)}>Техподдержка</Button>
                 <Button compact={true} style={styles.transportFormButton} contentStyle={styles.transportFormButtonContent} mode="contained" onPress={() => goToForm('Заказать мониторнинг', 2)}>Заказать мониторнинг</Button>
                 <Button compact={true} style={styles.transportFormButton} contentStyle={styles.transportFormButtonContent} mode="contained" onPress={() => goToForm('Заказ или ремонт тахографа', 3)}>Заказ или ремонт тахографа</Button>
+                <Button compact={true} style={styles.transportFormButton} contentStyle={styles.transportFormButtonContent} mode="contained" onPress={() => goToForm('Ремонт', 4)}>Ремонт</Button>
                 <Button compact={true} style={styles.transportFormButton} contentStyle={styles.transportFormButtonContentDis} mode="contained" onPress={() => console.log('Pressed')} disabled={true}>Заправки</Button>
-                <Button compact={true} style={styles.transportFormButton} contentStyle={styles.transportFormButtonContentDis} mode="contained" onPress={() => console.log('Pressed')} disabled={true}>Ремонт</Button>
             </ScrollView>
         </View>
     )

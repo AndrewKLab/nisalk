@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Text, View, FlatList, ScrollView } from 'react-native';
-import {Picker} from '@react-native-picker/picker';
+import React, { useEffect, useState, useRef } from 'react';
+import { Text, View, FlatList, ScrollView, Keyboard, TouchableWithoutFeedback  } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { reqestsActions } from '../../_actions';
 import { connect } from 'react-redux';
 import { Alert, Loading, TSListItem } from '../../_components';
@@ -8,12 +8,15 @@ import { Button, Headline, Caption, Title, TextInput, Surface, IconButton, Dialo
 import DocumentPicker from 'react-native-document-picker';
 import { styles } from '../../_styles/styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import moment from 'moment';
+
 
 
 
 const TSForm = ({ dispatch, navigation, jwt, route, user, requests_type }) => {
     const [loading, setLoading] = useState(true);
-    const [visible, setVisible] = React.useState(false);
+    const [visible, setVisible] = useState(false);
     const { ts, theme } = route.params;
     const [mark, setMark] = useState(ts !== null ? ts.lk_ts_brand : '');
     const [model, setModel] = useState(ts !== null ? ts.lk_ts_model : '');
@@ -22,6 +25,22 @@ const TSForm = ({ dispatch, navigation, jwt, route, user, requests_type }) => {
     const [fileList, setFileList] = useState([]);
     const [selectedValue, setSelectedValue] = useState(user !== undefined && user.orgs !== undefined ? user.orgs.length > 1 ? '' : user.orgs[0].org_id : '');
     const [sendError, setSendError] = useState('');
+    const [date, setDate] = useState(new Date());
+    const dataTimeInput = useRef(null);
+    const [show, setShow] = useState(false);
+
+    const onChange = (event, selectedDate) => {
+        const currentDate = selectedDate || date;
+        setShow(Platform.OS === 'ios');
+        setDate(currentDate);
+        dataTimeInput.current.blur()
+    };
+
+    const showDatePiker = () => {
+        setShow(true);
+    };
+
+
 
     // useEffect(() => {
     //     dispatch(transportActions.getTransports(jwt)).then(() => { setLoading(false) })
@@ -60,17 +79,17 @@ const TSForm = ({ dispatch, navigation, jwt, route, user, requests_type }) => {
     }
 
     const showModal = (error) => {
-        if(error){
+        if (error) {
             setSendError(error)
         }
         setVisible(true);
     };
     const hideModal = () => {
         setVisible(false);
-        if(sendError === ''){
+        if (sendError === '') {
             navigation.goBack();
-            
-        }  
+
+        }
     }
 
     const sendMessage = (theme, message, mark, model, number, fileList) => {
@@ -78,29 +97,60 @@ const TSForm = ({ dispatch, navigation, jwt, route, user, requests_type }) => {
         dispatch(reqestsActions.createRequest(jwt, theme, message, user !== undefined && user.orgs !== undefined ? user.orgs[0].org_id : 0, mark, model, number, number.slice(6), fileList, showModal, user, requests_type))
     }
 
+    const formType = (theme) => {
+        switch (theme) {
+            case 4:
+                return (
+                    <>
+                        <Title style={{ marginBottom: 8 }}>{`${number} ${mark} ${model}`}</Title>
+                        <TouchableWithoutFeedback onPress={()=>console.log(123)}>
+                        <>
+                        <Paragraph>{"Требуемая дата проведения ремонта:"}</Paragraph>
+                        <View style={[styles.formInput, {}]}>
+                            {moment(date).format("DD.MM.YYYY")}
+                        </View>
+                        {/* <TextInput
+                            ref={dataTimeInput}
+                            mode={'outlined'}
+                            label=
+                            value=
+                            
+                            disabled={selectedValue === ''}
+                            
+                        /> */}
+                        </>
+                        </TouchableWithoutFeedback >
+                        {show && (
+                            <DateTimePicker
+                                testID="dateTimePicker"
+                                value={date}
+                                mode={'date'}
+                                is24Hour={true}
+                                display="default"
+                                onChange={onChange}
+                            />
+                        )}
 
-    return (
-        <ScrollView style={styles.formContainer}>
-            <View style={styles.formOrgContainer}>
-                <Caption>Организация</Caption>
-                {user !== undefined && user.orgs !== undefined ? user.orgs.length > 1 ? 
-                <View style={{  borderRadius: 2, borderWidth: 1.5, borderColor: '#a8a8a8',  }}>
-                <Picker
-                    selectedValue={selectedValue}
-                    dropdownIconColor={'#000'}
-                    prompt="Организации:"
-                    onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
-                >
-                    <Picker.Item label={'Выберите организацию'} value={''} />
-                    {user.orgs.map((item, index) => <Picker.Item key={index} label={item.org_name} value={item.org_id} />)}
-   
-                </Picker>
-                </View>
-                : 
-                <Headline>{user.orgs.map((item, index) => item.org_name)}</Headline> : null}
-            </View>
-            <View style={styles.formInputsContainer}>
-                {theme !== 6 ?
+
+                    </>
+                )
+            case 6:
+                return (
+                    <>
+                        <TextInput
+                            mode={'outlined'}
+                            label="Задать вопрос"
+                            value={message}
+                            style={styles.formInput}
+                            disabled={selectedValue === ''}
+                            multiline={true}
+                            numberOfLines={4}
+                            onChangeText={text => setMessage(text)}
+                        />
+                    </>
+                )
+            default:
+                return (
                     <>
                         <Title style={{ marginBottom: 8 }}>Транспорное средство</Title>
                         <TextInput
@@ -138,21 +188,37 @@ const TSForm = ({ dispatch, navigation, jwt, route, user, requests_type }) => {
                             onChangeText={text => setMessage(text)}
                         />
                     </>
+                )
+        }
+    }
+
+
+    return (
+        <ScrollView style={styles.formContainer}>
+            <View style={styles.formOrgContainer}>
+                <Caption>Организация</Caption>
+                {user !== undefined && user.orgs !== undefined ? user.orgs.length > 1 ?
+                    <View style={{ borderRadius: 2, borderWidth: 1.5, borderColor: '#a8a8a8', }}>
+                        <Picker
+                            selectedValue={selectedValue}
+                            dropdownIconColor={'#000'}
+                            prompt="Организации:"
+                            onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+                        >
+                            <Picker.Item label={'Выберите организацию'} value={''} />
+                            {user.orgs.map((item, index) => <Picker.Item key={index} label={item.org_name} value={item.org_id} />)}
+
+                        </Picker>
+                    </View>
                     :
-                    <>
-                        <TextInput
-                            mode={'outlined'}
-                            label="Задать вопрос"
-                            value={message}
-                            style={styles.formInput}
-                            disabled={selectedValue === ''}
-                            multiline={true}
-                            numberOfLines={4}
-                            onChangeText={text => setMessage(text)}
-                        />
-                    </>
-                }
-                <Button style={[styles.formInput, {marginBottom: 24}]} icon="file" mode="outlined" disabled={selectedValue === ''} onPress={selectfileList}>Прикрепить файлы</Button>
+                    <Headline>{user.orgs.map((item, index) => item.org_name)}</Headline> : null}
+            </View>
+
+            <View style={styles.formInputsContainer}>
+                {formType(theme)}
+
+
+                <Button style={[styles.formInput, { marginBottom: 24 }]} icon="file" mode="outlined" disabled={selectedValue === ''} onPress={selectfileList}>Прикрепить файлы</Button>
                 {fileList.length > 0 &&
                     <View style={[styles.filesBoard, { marginBottom: 8 }]}>
                         <FlatList
@@ -175,13 +241,14 @@ const TSForm = ({ dispatch, navigation, jwt, route, user, requests_type }) => {
 
                     </View>
                 }
-                <Button style={{marginBottom: 8}} mode="contained" disabled={selectedValue === ''} onPress={() => sendMessage(theme, message, mark, model, number, fileList)}>Отправить</Button>
+                <Button style={{ marginBottom: 8 }} mode="contained" disabled={selectedValue === ''} onPress={() => sendMessage(theme, message, mark, model, number, fileList)}>Отправить</Button>
             </View>
+
             <Portal>
                 <Dialog visible={visible} onDismiss={hideModal}>
-                    <Dialog.Title>{sendError !== '' ?  'Ошибка': 'Спасибо'}</Dialog.Title>
+                    <Dialog.Title>{sendError !== '' ? 'Ошибка' : 'Спасибо'}</Dialog.Title>
                     <Dialog.Content>
-                        <Paragraph>{sendError !== '' ?  sendError: 'Ваша заявка была отправленна!'}</Paragraph>
+                        <Paragraph>{sendError !== '' ? sendError : 'Ваша заявка была отправленна!'}</Paragraph>
                     </Dialog.Content>
                     <Dialog.Actions>
                         <Button onPress={hideModal}>Закрыть</Button>
