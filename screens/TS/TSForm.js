@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Text, View, FlatList, ScrollView, Keyboard, TouchableWithoutFeedback  } from 'react-native';
+import { Text, View, FlatList, ScrollView, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { reqestsActions } from '../../_actions';
 import { connect } from 'react-redux';
@@ -25,15 +25,14 @@ const TSForm = ({ dispatch, navigation, jwt, route, user, requests_type }) => {
     const [fileList, setFileList] = useState([]);
     const [selectedValue, setSelectedValue] = useState(user !== undefined && user.orgs !== undefined ? user.orgs.length > 1 ? '' : user.orgs[0].org_id : '');
     const [sendError, setSendError] = useState('');
+
     const [date, setDate] = useState(new Date());
-    const dataTimeInput = useRef(null);
     const [show, setShow] = useState(false);
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
         setShow(Platform.OS === 'ios');
         setDate(currentDate);
-        dataTimeInput.current.blur()
     };
 
     const showDatePiker = () => {
@@ -103,22 +102,13 @@ const TSForm = ({ dispatch, navigation, jwt, route, user, requests_type }) => {
                 return (
                     <>
                         <Title style={{ marginBottom: 8 }}>{`${number} ${mark} ${model}`}</Title>
-                        <TouchableWithoutFeedback onPress={()=>console.log(123)}>
-                        <>
-                        <Paragraph>{"Требуемая дата проведения ремонта:"}</Paragraph>
-                        <View style={[styles.formInput, {}]}>
-                            {moment(date).format("DD.MM.YYYY")}
-                        </View>
-                        {/* <TextInput
-                            ref={dataTimeInput}
-                            mode={'outlined'}
-                            label=
-                            value=
-                            
-                            disabled={selectedValue === ''}
-                            
-                        /> */}
-                        </>
+                        <TouchableWithoutFeedback onPress={showDatePiker}>
+                            <View>
+                                <Paragraph>{"Требуемая дата проведения ремонта:"}</Paragraph>
+                                <View style={[styles.formInput, { padding: 16, borderWidth: 1, borderRadius: 2, borderColor: 'rgba(0,0,0,0.54)' }]}>
+                                    <Paragraph>{moment(date).format("DD.MM.YYYY")}</Paragraph>
+                                </View>
+                            </View>
                         </TouchableWithoutFeedback >
                         {show && (
                             <DateTimePicker
@@ -131,6 +121,18 @@ const TSForm = ({ dispatch, navigation, jwt, route, user, requests_type }) => {
                             />
                         )}
 
+                        <Paragraph>{"Вид ремонта:"}</Paragraph>
+                        <View style={[styles.formInput, { borderRadius: 2, borderWidth: 1, borderColor: 'rgba(0,0,0,0.54)', }]}>
+                            <Picker
+                                selectedValue={selectedValue}
+                                dropdownIconColor={'#000'}
+                                prompt="Вид ремонта:"
+                                onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+                            >
+                                <Picker.Item label={'Отложенный ремонт'} value={'1'} />
+                                <Picker.Item label={'Срочный ремонт'} value={'2'} />
+                            </Picker>
+                        </View>
 
                     </>
                 )
@@ -195,25 +197,26 @@ const TSForm = ({ dispatch, navigation, jwt, route, user, requests_type }) => {
 
     return (
         <ScrollView style={styles.formContainer}>
-            <View style={styles.formOrgContainer}>
-                <Caption>Организация</Caption>
-                {user !== undefined && user.orgs !== undefined ? user.orgs.length > 1 ?
-                    <View style={{ borderRadius: 2, borderWidth: 1.5, borderColor: '#a8a8a8', }}>
-                        <Picker
-                            selectedValue={selectedValue}
-                            dropdownIconColor={'#000'}
-                            prompt="Организации:"
-                            onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
-                        >
-                            <Picker.Item label={'Выберите организацию'} value={''} />
-                            {user.orgs.map((item, index) => <Picker.Item key={index} label={item.org_name} value={item.org_id} />)}
+            {theme !== 4 &&
+                <View style={styles.formOrgContainer}>
+                    <Caption>Организация</Caption>
+                    {user !== undefined && user.orgs !== undefined ? user.orgs.length > 1 ?
+                        <View style={{ borderRadius: 2, borderWidth: 1.5, borderColor: '#a8a8a8', }}>
+                            <Picker
+                                selectedValue={selectedValue}
+                                dropdownIconColor={'#000'}
+                                prompt="Организации:"
+                                onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+                            >
+                                <Picker.Item label={'Выберите организацию'} value={''} />
+                                {user.orgs.map((item, index) => <Picker.Item key={index} label={item.org_name} value={item.org_id} />)}
 
-                        </Picker>
-                    </View>
-                    :
-                    <Headline>{user.orgs.map((item, index) => item.org_name)}</Headline> : null}
-            </View>
-
+                            </Picker>
+                        </View>
+                        :
+                        <Headline>{user.orgs.map((item, index) => item.org_name)}</Headline> : null}
+                </View>
+            }
             <View style={styles.formInputsContainer}>
                 {formType(theme)}
 

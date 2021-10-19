@@ -9,3 +9,4 @@ export * from './File';
 
 //ListItems
 export * from './ListItems/TSListItem';
+export * from './ListItems/TSRepairingListItem';

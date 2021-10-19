@@ -10,11 +10,20 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 //screens
-import { LoginScreen, ReqestsScreen, ReqestСhatScreen, Appeals, AppealsItem, AppealsForm, TS, TSItem, TSForm } from '../screens';
+import { LoginScreen, ReqestsScreen, ReqestСhatScreen, Appeals, AppealsItem, AppealsForm, 
+  
+  TS, 
+  TSItem,
+  TSRepairing,
+
+  //forms
+  TSForm,
+  RepairForm,
+} from '../screens';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import PushNotification  from "react-native-push-notification";
+import PushNotification from "react-native-push-notification";
 
 
 const MainStackNavigator = createStackNavigator();
@@ -25,7 +34,7 @@ export const MainNavigator = ({ }) => {
   useEffect(() => {
     AsyncStorage.getItem('user').then((result) => {
       dispatch(userActions.setInit(result))
-      
+
       if (result === null) {
         setInitialRouteName("Login")
       } else {
@@ -59,30 +68,6 @@ export const MainNavigator = ({ }) => {
 
 const Tab = createBottomTabNavigator();
 const BottomTabNavigator = ({ dispatch, route, navigation }) => {
-
-  // useEffect(() => {
-  //   PushNotification.configure({
-  //     onRegister: function (token) {
-  //       console.log("TOKEN:", token);
-  //     },
-  //     onNotification: function (notification) {
-  //      // navigation.navigate('ReqestСhat', { task_lk_id: notification.data.task })
-  //      console.log('нажал')
-  //     },
-
-  //     permissions: {
-  //       alert: true,
-  //       badge: true,
-  //       sound: true,
-  //     },
-  //     popInitialNotification: true,
-  //     requestPermissions: true,
-  //   });
-
-  // }, []);
-
-
-
 
   return (
     <Tab.Navigator
@@ -124,7 +109,16 @@ const BottomTabNavigator = ({ dispatch, route, navigation }) => {
           ),
         }}
       />
-
+      <Tab.Screen
+        name="TSRepair"
+        component={connectedTSRepairNavigator}
+        options={{
+          tabBarLabel: 'Ремонт',
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="car-cog" color={color} size={26} />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 }
@@ -222,7 +216,8 @@ const TSNavigator = ({ }) => {
   return (
     <TSStackNavigator.Navigator initialRouteName={'TSScreen'} screenOptions={({ navigation, route }) => screenOptions(navigation, route)}>
       <TSStackNavigator.Screen
-        options={({ navigation, route }) => ({ title: 'НИСА lk', headerLeft: () => null, })}
+        options={({ navigation, route }) => ({ title: 'НИСА lk', headerLeft: () => null })}
+        initialParams={{ type: 'info' }}
         name="TSScreen"
         component={TS}
       />
@@ -236,6 +231,11 @@ const TSNavigator = ({ }) => {
         name="TSFormScreen"
         component={TSForm}
       />
+      <TSStackNavigator.Screen
+        options={({ navigation, route }) => ({ title: route.params.title })}
+        name="RepairFormScreen"
+        component={RepairForm}
+      />
     </TSStackNavigator.Navigator>
   );
 }
@@ -246,3 +246,39 @@ const TSMapStateToProps = (state) => {
   };
 };
 const connectedTSNavigator = connect(TSMapStateToProps)(TSNavigator);
+
+const TSRepairStackNavigator = createStackNavigator();
+const TSRepairNavigator = ({ }) => {
+  const screenOptions = (navigation, route) => {
+    return {
+      headerRight: () => <HeaderRight navigation={navigation} />,
+      headerStyle: {
+        backgroundColor: '#2f7cfe',
+      },
+      headerTintColor: '#ffffff'
+    };
+  };
+
+  return (
+    <TSRepairStackNavigator.Navigator initialRouteName={'TSScreen'} screenOptions={({ navigation, route }) => screenOptions(navigation, route)}>
+      <TSRepairStackNavigator.Screen
+        options={({ navigation, route }) => ({ title: 'НИСА lk', headerLeft: () => null })}
+        name="TSScreen"
+        initialParams={{ type: 'repair' }}
+        component={TS}
+      />
+      <TSRepairStackNavigator.Screen
+        options={({ navigation, route }) => ({ title: route.params.title })}
+        name="TSRepairingScreen"
+        component={TSRepairing}
+      />
+    </TSRepairStackNavigator.Navigator>
+  );
+}
+
+const TSRepairMapStateToProps = (state) => {
+  return {
+    jwt: state.authentication.jwt,
+  };
+};
+const connectedTSRepairNavigator = connect(TSRepairMapStateToProps)(TSRepairNavigator);

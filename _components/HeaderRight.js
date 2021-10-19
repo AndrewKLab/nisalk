@@ -7,7 +7,7 @@ import DeviceInfo from 'react-native-device-info';
 
 import { connect } from 'react-redux';
 
-const HeaderRight = ({ navigation, dispatch, jwt }) => {
+const HeaderRight = ({ navigation, dispatch, jwt, user }) => {
 
     const [visibleMenu, setVisibleMenu] = useState(false);
     const openMenu = () => setVisibleMenu(true);
@@ -37,6 +37,7 @@ const HeaderRight = ({ navigation, dispatch, jwt }) => {
                         onPress={openMenu}
                     />
                 }>
+                <Menu.Item title={user && `${user.lastname} ${user.firstname}`} disabled />
                 <Menu.Item icon="exit-to-app" onPress={() => { closeMenu(), showDialog() }} title="Выход" />
 
                 <Menu.Item title={`Версия: ${DeviceInfo.getVersion()}`} disabled />
@@ -59,9 +60,9 @@ const HeaderRight = ({ navigation, dispatch, jwt }) => {
 }
 
 const mapStateToProps = (state) => {
-    const { jwt } = state.authentication;
+    const { jwt, user } = state.authentication;
     return {
-        jwt,
+        jwt, user
     };
 };
 

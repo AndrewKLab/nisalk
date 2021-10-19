@@ -8,18 +8,18 @@ import { styles } from '../../_styles/styles';
 
 
 const TSItem = ({ dispatch, navigation, route }) => {
-    const [loading, setLoading] = useState(true);
-
     const { item } = route.params;
-    // useEffect(() => {
-    //     dispatch(transportActions.getTransports(jwt)).then(() => { setLoading(false) })
-    // }, []);
-
-    // if (loading || transports_loading) return <Loading />
-    // if (transports_error !== null) return <Alert message={transports_error} onRefreshError={onRefreshError} />
 
     const goToForm = (title, theme) => {
-        navigation.navigate('TSFormScreen', { title: title, theme: theme, ts: item })
+        switch (theme) {
+            case 4:
+                navigation.navigate('RepairFormScreen', { title: title, theme: theme, ts: item })
+                break;
+            default:
+                navigation.navigate('TSFormScreen', { title: title, theme: theme, ts: item })
+                break;
+        }
+
     }
 
     return (

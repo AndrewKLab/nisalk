@@ -121,6 +121,7 @@ const ReqestСhatScreen = ({ dispatch, route, user, jwt, request_messages, reque
           renderItem={({ item, index }) => <Message index={index} item={item} />}
           onScroll={(e) => onScrollMessages(e)}
           keyExtractor={(item, index) => index}
+          style={{scaleY: -1}}
         />
         {/* {request_messages.unread_messages > 0 &&
           <View>
@@ -134,7 +135,7 @@ const ReqestСhatScreen = ({ dispatch, route, user, jwt, request_messages, reque
           </View>
         } */}
         {fileList.length > 0 &&
-          <View style={styles.filesBoard}>
+          <View style={[styles.filesBoard, {scaleY: -1}]}>
             <FlatList
               data={fileList}
               horizontal

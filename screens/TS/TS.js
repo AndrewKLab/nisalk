@@ -7,7 +7,8 @@ import { Searchbar, Button, Paragraph } from 'react-native-paper';
 import { styles } from '../../_styles/styles';
 
 
-const TS = ({ dispatch, navigation, jwt, transports, transports_loading, transports_error }) => {
+const TS = ({ dispatch, route, navigation, jwt, transports, transports_loading, transports_error }) => {
+    const { type } = route.params;
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -81,7 +82,7 @@ const TS = ({ dispatch, navigation, jwt, transports, transports_loading, transpo
                 data={searchQuery === '' ? transports : searchTranstortList}
                 ListEmptyComponent={EmptyTSListComponent}
                 renderItem={({ item, index }) => (
-                    <TSListItem item={item} index={index} navigation={navigation} onPress={() => { navigation.navigate('TSItemScreen', { item }) }} />
+                    <TSListItem item={item} index={index} navigation={navigation} onPress={() => { type === 'info' ? navigation.navigate('TSItemScreen', { item }) : navigation.navigate('TSRepairingScreen', {title: `${item.lk_ts_reg_number} ${item.lk_ts_brand} ${item.lk_ts_model}`, ts: item }) }} />
                 )}
                 onRefresh={onRefresh}
                 refreshing={refreshing}
