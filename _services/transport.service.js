@@ -22,11 +22,11 @@ function getTransports(token) {
   return axios(config)
 }
 
-function getRepairingTransport(token, ts_id) {
+function getRepairingTransport(token) {
   var data = new FormData();
   var config = {
     method: 'get',
-    url: `${configApi.apiUrl}/app/maintenance/get/${ts_id}`,
+    url: `${configApi.apiUrl}/app/maintenance/get`,
     headers: {
       'Authorization': `Bearer ${token}`
     },

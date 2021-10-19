@@ -30,8 +30,9 @@ export const TSRepairingListItem = ({ children, item, }) => {
 
                 <View style={[styles.listitemTop, { borderBottomWidth: item.mn_vid_rep || item.mn_kilometrage || item.mn_runing_time || item.mn_notes ? 1 : 0 }]}>
                     <View style={styles.listitemTextFT}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-                            <Text style={[styles.listitemTextTitle, { marginRight: 8, color: '#0F47A5', }]}>{malfunctionType(item.mn_malfunction_id)}</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', flex: 1 }}>
+                            <Text style={[styles.listitemTextTitle, { color: '#0F47A5', }]}>{item.lk_ts_reg_number}</Text>
+                            <Text style={[styles.listitemTextTitle]}>{malfunctionType(item.mn_malfunction_id)}</Text>
                         </View>
                     </View>
                 </View>

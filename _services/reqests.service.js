@@ -1,6 +1,7 @@
 import { configApi } from './config';
 import axios from 'axios';
 import FormData from 'form-data';
+import DeviceInfo from 'react-native-device-info';
 
 export const reqestsService = {
   getReuests,
@@ -61,6 +62,7 @@ function sendMessage(token, message, req, files) {
     data.append('nofile[]', "")
   }
   // Please change file upload URL
+  data.append('app_version', DeviceInfo.getVersion())
   return fetch(
     `${configApi.apiUrl}/app/message/save?text_message=${message}&request_id=${req}`,
     {
@@ -103,7 +105,7 @@ function createRequest(token, theme, message, org_id, mark, model, number, regio
     // If no file selected the show alert
     data.append('nofile[]', "")
   }
-
+  data.append('app_version', DeviceInfo.getVersion())
   return fetch(
     `${configApi.apiUrl}/app/request/save?theme=${theme}&message=${message}&org_id=${org_id}&mark=${mark}&model=${model}&number=${number}&region=${region}`,
     {

@@ -45,11 +45,11 @@ function getTransports(jwt) {
 
 }
 
-function getRepairingTransport(jwt, ts_id) {
+function getRepairingTransport(jwt) {
   return (dispatch) => {
     dispatch(request({ jwt }));
 
-    return transportService.getRepairingTransport(jwt, ts_id)
+    return transportService.getRepairingTransport(jwt)
       .then(
         (response) => {
           //AsyncStorage.setItem('transports', JSON.stringify(response.data));

@@ -263,12 +263,6 @@ const TSRepairNavigator = ({ }) => {
     <TSRepairStackNavigator.Navigator initialRouteName={'TSScreen'} screenOptions={({ navigation, route }) => screenOptions(navigation, route)}>
       <TSRepairStackNavigator.Screen
         options={({ navigation, route }) => ({ title: 'НИСА lk', headerLeft: () => null })}
-        name="TSScreen"
-        initialParams={{ type: 'repair' }}
-        component={TS}
-      />
-      <TSRepairStackNavigator.Screen
-        options={({ navigation, route }) => ({ title: route.params.title })}
         name="TSRepairingScreen"
         component={TSRepairing}
       />

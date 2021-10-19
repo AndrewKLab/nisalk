@@ -3,32 +3,44 @@ import { Text, View, FlatList, TouchableOpacity, ScrollView } from 'react-native
 import { transportActions } from '../../_actions';
 import { connect } from 'react-redux';
 import { Alert, Loading, TSRepairingListItem } from '../../_components';
-import { Button, Headline, Paragraph } from 'react-native-paper';
+import { Button, Searchbar, Paragraph } from 'react-native-paper';
 import { styles } from '../../_styles/styles';
 
 
 const TSRepairing = ({ dispatch, navigation, route, jwt, repairing_transport, repairing_transport_loading, repairing_transport_error }) => {
-    const { ts } = route.params;
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchTranstortList, setSearchTranstortList] = useState('');
+
+
+    const onChangeSearch = (query) => {
+        setSearchQuery(query)
+        if (query !== '') {
+            var rg_value = new RegExp(query, "i");
+            const result = repairing_transport.filter(item => item.lk_ts_reg_number.match(rg_value) !== null);
+            setSearchTranstortList(result)
+        }
+
+    };
 
     useEffect(() => {
-        dispatch(transportActions.getRepairingTransport(jwt, ts.lk_ts_id)).then(() => { setLoading(false) })
+        dispatch(transportActions.getRepairingTransport(jwt)).then(() => { setLoading(false) })
     }, []);
 
     const onRefresh = () => {
         setRefreshing(true);
-        if (!repairing_transport_loading) { dispatch(transportActions.getRepairingTransport(jwt, ts.lk_ts_id)).then(() => { setRefreshing(false) }) }
+        if (!repairing_transport_loading) { dispatch(transportActions.getRepairingTransport(jwt)).then(() => { setRefreshing(false) }) }
     };
 
     const onRefreshError = () => {
         setLoading(true);
-        if (!repairing_transport_loading) { dispatch(transportActions.getRepairingTransport(jwt, ts.lk_ts_id)).then(() => { setLoading(false) }) }
+        if (!repairing_transport_loading) { dispatch(transportActions.getRepairingTransport(jwt)).then(() => { setLoading(false) }) }
     }
 
     const EmptyRepairingTSListComponent = () => {
         return (
-            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <View style={{
                     padding: 20,
                     borderColor: "#e0e0e0",
@@ -47,8 +59,13 @@ const TSRepairing = ({ dispatch, navigation, route, jwt, repairing_transport, re
 
     return (
         <View style={{ flex: 1 }}>
+            <Searchbar
+                placeholder="Поиск"
+                onChangeText={onChangeSearch}
+                value={searchQuery}
+            />
             <FlatList
-                data={repairing_transport}
+                data={searchQuery === '' ? repairing_transport : searchTranstortList}
                 contentContainerStyle={{ flexGrow: 1 }}
                 ListEmptyComponent={EmptyRepairingTSListComponent}
                 renderItem={({ item, index }) => (
@@ -56,7 +73,7 @@ const TSRepairing = ({ dispatch, navigation, route, jwt, repairing_transport, re
                 )}
                 onRefresh={onRefresh}
                 refreshing={refreshing}
-                keyExtractor={(item, index) => item.lk_ts_id}
+                keyExtractor={(item, index) => item.mn_id}
             />
         </View>
     )

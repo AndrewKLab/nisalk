@@ -157,7 +157,7 @@ const RepairForm = ({ dispatch, navigation, jwt, route, user, requests_type }) =
                 <Dialog visible={visible} onDismiss={hideModal}>
                     <Dialog.Title>{sendError !== '' ? 'Ошибка' : 'Спасибо'}</Dialog.Title>
                     <Dialog.Content>
-                        <Paragraph>{sendError !== '' ? sendError : 'Ваша заявка на ремонт была отправленна!'}</Paragraph>
+                        <Paragraph>{sendError !== '' ? sendError : 'Ваша заявка на ремонт была отправлена!'}</Paragraph>
                     </Dialog.Content>
                     <Dialog.Actions>
                         <Button onPress={hideModal}>Закрыть</Button>
