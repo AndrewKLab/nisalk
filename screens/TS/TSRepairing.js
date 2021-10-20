@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Text, View, FlatList, TouchableOpacity, ScrollView } from 'react-native';
 import { transportActions } from '../../_actions';
 import { connect } from 'react-redux';
-import { Alert, Loading, TSRepairingListItem } from '../../_components';
+import { Alert, Loading, TSRepairingListItem, EmptyListComponent } from '../../_components';
 import { Button, Searchbar, Paragraph } from 'react-native-paper';
 import { styles } from '../../_styles/styles';
 
@@ -38,22 +38,6 @@ const TSRepairing = ({ dispatch, navigation, route, jwt, repairing_transport, re
         if (!repairing_transport_loading) { dispatch(transportActions.getRepairingTransport(jwt)).then(() => { setLoading(false) }) }
     }
 
-    const EmptyRepairingTSListComponent = () => {
-        return (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <View style={{
-                    padding: 20,
-                    borderColor: "#e0e0e0",
-                    backgroundColor: '#fff',
-                    borderWidth: 1,
-                    borderRadius: 8,
-                }}>
-                    <Paragraph style={{ textAlign: 'center', }}>Заявки на ремонт не найдены.</Paragraph >
-                </View>
-            </View>
-        );
-    }
-
     if (loading || repairing_transport_loading) return <Loading />
     if (repairing_transport_error !== null) return <Alert message={repairing_transport_error} onRefreshError={onRefreshError} />
 
@@ -67,7 +51,7 @@ const TSRepairing = ({ dispatch, navigation, route, jwt, repairing_transport, re
             <FlatList
                 data={searchQuery === '' ? repairing_transport : searchTranstortList}
                 contentContainerStyle={{ flexGrow: 1 }}
-                ListEmptyComponent={EmptyRepairingTSListComponent}
+                ListEmptyComponent={<EmptyListComponent message={'Заявки на ремонт не найдены.'} />}
                 renderItem={({ item, index }) => (
                     <TSRepairingListItem item={item} index={index} navigation={navigation} />
                 )}

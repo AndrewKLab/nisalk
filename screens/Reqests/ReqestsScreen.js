@@ -2,12 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { SafeAreaView, FlatList, View, BackHandler } from 'react-native';
 import { Button, Text, Searchbar } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { styles } from '../_styles/styles';
-import { reqestsActions } from '../_actions';
-import { Loading, ListItem, Alert } from '../_components';
+import { reqestsActions } from '../../_actions';
+import { Loading, ListItem, Alert, EmptyListComponent } from '../../_components';
 import messaging from '@react-native-firebase/messaging';
-//import NotificationSounds, { playSampleSound } from 'react-native-notification-sounds';
-//import notifee, {EventType} from '@notifee/react-native';
 import PushNotification from "react-native-push-notification";
 
 
@@ -24,10 +21,8 @@ const ReqestsScreen = ({ dispatch, jwt, requests, requests_loading, requests_err
       var rg_value = new RegExp(query, "i");
       const result = requests.filter(item => item.task_lk_number !== null && item.task_lk_number.match(rg_value) !== null || item.task_lk_id !== null && String(item.task_lk_id).match(rg_value) !== null);
       setSearchRequestsList(result)
-      console.log(result);
 
     }
-
   };
 
 
@@ -182,15 +177,14 @@ const ReqestsScreen = ({ dispatch, jwt, requests, requests_loading, requests_err
         requests_error !== null ? <Alert message={requests_error} onRefreshError={onRefreshError} /> :
           <FlatList
             data={searchQuery === '' ? requests : searchRequestsList}
-            ListEmptyComponent={() => (
-              <View style={{ marginTop: '50%', justifyContent: 'center', alignItems: 'center' }}><Text>У вас пока что нет заявок.</Text></View>
-            )}
-            renderItem={({ item, index }) => (
-              <ListItem item={item} index={index} onPress={() => goToChat(item.task_lk_id)} />
+            contentContainerStyle={{ flexGrow: 1 }}
+            ListEmptyComponent={<EmptyListComponent message={'Заявки не найдены.'} />}
+            renderItem={({ item }) => (
+              <ListItem item={item} index={item.task_lk_id} onPress={() => goToChat(item.task_lk_id)} />
             )}
             onRefresh={onRefresh}
             refreshing={refreshing}
-            keyExtractor={(item, index) => item.task_lk_id}
+            keyExtractor={(item) => item.task_lk_id}
           />
       }
     </SafeAreaView>

@@ -89,7 +89,7 @@ const LoginScreen = ({ login_error, login_loading, navigation }) => {
                 testID="Password"
               />
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
               <Text>Запомнить меня</Text>
               <Checkbox
                 status={checked ? 'checked' : 'unchecked'}
@@ -100,11 +100,7 @@ const LoginScreen = ({ login_error, login_loading, navigation }) => {
               />
             </View>
           </View>
-          <Button
-            onPress={() => signin(username, password)}
-            mode="contained"
-            loading={login_loading}
-          >Войти</Button>
+          <Button onPress={() => signin(username, password)} mode="contained" loading={login_loading}>Войти</Button>
         </View>
       </View>
       {visableInfo &&

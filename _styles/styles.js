@@ -397,7 +397,23 @@ export const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
 
-  
+  //Empty List Component
+  emptyListComponent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  emptyListComponentContainer: {
+    padding: 20,
+    margin: 20,
+    borderColor: "#e0e0e0",
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderRadius: 8,
+  }
+
+
 
 
 });

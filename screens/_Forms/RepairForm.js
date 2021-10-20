@@ -1,27 +1,20 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Text, View, FlatList, ScrollView, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import React, {useState } from 'react';
+import { View, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { transportActions } from '../../_actions';
 import { connect } from 'react-redux';
-import { Alert, Loading, TSListItem } from '../../_components';
-import { Button, Headline, Caption, Title, TextInput, Surface, IconButton, Dialog, Portal, Paragraph } from 'react-native-paper';
-import DocumentPicker from 'react-native-document-picker';
+import { Button, Title, TextInput, Dialog, Portal, Paragraph } from 'react-native-paper';
 import { styles } from '../../_styles/styles';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 
 
 
 
-const RepairForm = ({ dispatch, navigation, jwt, route, user, requests_type }) => {
-    const { ts, theme } = route.params;
+const RepairForm = ({ dispatch, navigation, jwt, route, create_reqest_loading, create_reqest_error, create_repair_reqest_message }) => {
+    const { ts } = route.params;
 
     const [visible, setVisible] = useState(false);
-
-    const [mark, setMark] = useState(ts !== null ? ts.lk_ts_brand : '');
-    const [model, setModel] = useState(ts !== null ? ts.lk_ts_model : '');
-    const [number, setNumber] = useState(ts !== null ? ts.lk_ts_reg_number : '');
 
     const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
@@ -74,7 +67,7 @@ const RepairForm = ({ dispatch, navigation, jwt, route, user, requests_type }) =
         <ScrollView style={styles.formContainer}>
             <View style={styles.formInputsContainer}>
 
-                <Title style={{ marginBottom: 8 }}>{`${number} ${mark} ${model}`}</Title>
+                <Title style={{ marginBottom: 8 }}>{`${ts !== null ? ts.lk_ts_reg_number : ''} ${ts !== null ? ts.lk_ts_brand : ''} ${ts !== null ? ts.lk_ts_model : ''}`}</Title>
                 <TouchableWithoutFeedback onPress={showDatePiker}>
                     <View>
                         <Paragraph>{"Требуемая дата проведения ремонта:"}</Paragraph>
@@ -150,7 +143,7 @@ const RepairForm = ({ dispatch, navigation, jwt, route, user, requests_type }) =
                     onChangeText={text => setNote(text)}
                 />
 
-                <Button style={{ marginBottom: 8 }} mode="contained" onPress={() => sendMessage(date, selectedRepairType, selectedMalfunctionType, mileage, operating, note, ts)}>Отправить</Button>
+                <Button style={{ marginBottom: 8 }} mode="contained" loading={create_reqest_loading} onPress={() => sendMessage(date, selectedRepairType, selectedMalfunctionType, mileage, operating, note, ts)}>Отправить</Button>
             </View>
 
             <Portal>
@@ -171,15 +164,13 @@ const RepairForm = ({ dispatch, navigation, jwt, route, user, requests_type }) =
 
 const mapStateToProps = (state) => {
     const { jwt, user } = state.authentication;
-    const { transports, transports_loading, transports_error } = state.transport;
-    const { requests_type } = state.requests;
+    const { create_reqest_loading, create_reqest_error, create_repair_reqest_message } = state.transport;
     return {
         jwt,
         user,
-        transports,
-        transports_loading,
-        transports_error,
-        requests_type
+        create_reqest_loading,
+        create_reqest_error,
+        create_repair_reqest_message
     };
 };
 

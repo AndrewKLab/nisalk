@@ -2,9 +2,9 @@ import React, { useEffect, useState, useRef } from 'react';
 import { SafeAreaView, View, Keyboard, FlatList } from 'react-native';
 import { Text, IconButton, Surface, TextInput } from 'react-native-paper';
 import { connect } from 'react-redux';
-import { styles } from '../_styles/styles';
-import { reqestsActions } from '../_actions';
-import { Loading, Alert, Message } from '../_components';
+import { styles } from '../../_styles/styles';
+import { reqestsActions } from '../../_actions';
+import { Loading, Alert, Message } from '../../_components';
 import EmojiBoard from 'react-native-emoji-board';
 import DocumentPicker from 'react-native-document-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -118,9 +118,9 @@ const ReqestСhatScreen = ({ dispatch, route, user, jwt, request_messages, reque
           inverted
           ListFooterComponent={loadingMore && <Loading style={{ backgroundColor: '#f2f2f2', height: 50 }} />}
           data={request_messages.messages}
-          renderItem={({ item, index }) => <Message index={index} item={item} />}
+          renderItem={({ item, index }) => <Message index={item.id} item={item} />}
           onScroll={(e) => onScrollMessages(e)}
-          keyExtractor={(item, index) => index}
+          keyExtractor={(item, index) => item.id}
           style={{scaleY: -1}}
         />
         {/* {request_messages.unread_messages > 0 &&
@@ -140,7 +140,7 @@ const ReqestСhatScreen = ({ dispatch, route, user, jwt, request_messages, reque
               data={fileList}
               horizontal
               renderItem={({ item, index }) => (
-                <Surface style={styles.filesBoardItem} key={index}>
+                <Surface style={styles.filesBoardItem} key={item.id}>
                   <IconButton
                     icon="close"
                     size={15}
@@ -151,7 +151,7 @@ const ReqestСhatScreen = ({ dispatch, route, user, jwt, request_messages, reque
                   <Text>{item.name.length > 4 ? "..." + item.name.substr(item.name.length - 8) : item.name}</Text>
                 </Surface>
               )}
-              keyExtractor={(item, index) => index}
+              keyExtractor={(item, index) => item.id}
             />
 
           </View>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Text, View, FlatList, ScrollView } from 'react-native';
 import { transportActions } from '../../_actions';
 import { connect } from 'react-redux';
-import { Alert, Loading, TSListItem } from '../../_components';
+import { Alert, Loading, TSListItem, EmptyListComponent } from '../../_components';
 import { Searchbar, Button, Paragraph } from 'react-native-paper';
 import { styles } from '../../_styles/styles';
 
@@ -14,15 +14,15 @@ const TS = ({ dispatch, route, navigation, jwt, transports, transports_loading, 
     const [searchQuery, setSearchQuery] = useState('');
     const [searchTranstortList, setSearchTranstortList] = useState('');
 
-
     const onChangeSearch = (query) => {
         setSearchQuery(query)
         if (query !== '') {
             var rg_value = new RegExp(query, "i");
-            const result = transports.filter(item => item.lk_ts_brand !== null && item.lk_ts_reg_number.match(rg_value) !== null);
+            const result = transports.filter(
+                item => item.lk_ts_brand !== null && item.lk_ts_brand.match(rg_value) !== null ||
+                item.lk_ts_reg_number !== null && item.lk_ts_reg_number.match(rg_value) !== null
+            );
             setSearchTranstortList(result)
-            console.log(result);
-
         }
 
     };
@@ -42,33 +42,6 @@ const TS = ({ dispatch, route, navigation, jwt, transports, transports_loading, 
         if (!transports_loading) { dispatch(transportActions.getTransports(jwt)).then(() => { setLoading(false) }) }
     }
 
-    const goToForm = (title, theme) => {
-        navigation.navigate('TSFormScreen', { title: title, theme: theme, ts: null })
-    }
-
-    const EmptyTSListComponent = () => {
-        return (
-            <View style={{
-                justifyContent: 'space-between',
-                marginHorizontal: 8,
-                marginVertical: 5,
-                borderColor: "#e0e0e0",
-                backgroundColor: '#fff',
-                borderWidth: 1,
-                borderRadius: 8,
-            }}>
-                <Paragraph style={{ textAlign: 'center', marginVertical: 30 }}>Транспортные средсва не найдены.</Paragraph >
-                <ScrollView style={styles.transportFormButtonContainer}>
-                    <Button compact={true} style={styles.transportFormButton} contentStyle={styles.transportFormButtonContent} mode="contained" onPress={() => goToForm('Техподдержка', 1)}>Техподдержка</Button>
-                    <Button compact={true} style={styles.transportFormButton} contentStyle={styles.transportFormButtonContent} mode="contained" onPress={() => goToForm('Заказать мониторнинг', 2)}>Заказать мониторнинг</Button>
-                    <Button compact={true} style={styles.transportFormButton} contentStyle={styles.transportFormButtonContent} mode="contained" onPress={() => goToForm('Заказ или ремонт тахографа', 3)}>Заказ или ремонт тахографа</Button>
-                    <Button compact={true} style={styles.transportFormButton} contentStyle={styles.transportFormButtonContentDis} mode="contained" onPress={() => console.log('Pressed')} disabled={true}>Заправки</Button>
-                    <Button compact={true} style={styles.transportFormButton} contentStyle={styles.transportFormButtonContentDis} mode="contained" onPress={() => console.log('Pressed')} disabled={true}>Ремонт</Button>
-                </ScrollView>
-            </View>
-        );
-    }
-
     if (loading || transports_loading) return <Loading />
     if (transports_error !== null) return <Alert message={transports_error} onRefreshError={onRefreshError} />
     return (
@@ -80,13 +53,14 @@ const TS = ({ dispatch, route, navigation, jwt, transports, transports_loading, 
             />
             <FlatList
                 data={searchQuery === '' ? transports : searchTranstortList}
-                ListEmptyComponent={EmptyTSListComponent}
-                renderItem={({ item, index }) => (
-                    <TSListItem item={item} index={index} navigation={navigation} onPress={() => { type === 'info' ? navigation.navigate('TSItemScreen', { item }) : navigation.navigate('TSRepairingScreen', {title: `${item.lk_ts_reg_number} ${item.lk_ts_brand} ${item.lk_ts_model}`, ts: item }) }} />
+                ListEmptyComponent={<EmptyListComponent message={'Транспортные средства не найдены.'} />}
+                contentContainerStyle={{ flexGrow: 1 }}
+                renderItem={({ item }) => (
+                    <TSListItem item={item} index={item.lk_ts_id} navigation={navigation} onPress={() => { type === 'info' ? navigation.navigate('TSItemScreen', { item }) : navigation.navigate('TSRepairingScreen', { title: `${item.lk_ts_reg_number} ${item.lk_ts_brand} ${item.lk_ts_model}`, ts: item }) }} />
                 )}
                 onRefresh={onRefresh}
                 refreshing={refreshing}
-                keyExtractor={(item, index) => item.lk_ts_id}
+                keyExtractor={(item) => item.lk_ts_id}
             />
         </View>
     )

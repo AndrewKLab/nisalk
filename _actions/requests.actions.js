@@ -190,7 +190,7 @@ function addMessage(req, message, messagedata) {
 
 function createRequest(token, theme, message, org_id, mark, model, number, region, files, openAlert, user, requests_type) {
   return (dispatch) => {
-    //dispatch(request({ token }));
+    dispatch(request({ token }));
     return reqestsService.createRequest(token, theme, message, org_id, mark, model, number, region, files)
       .then(res => res.json())
       .then(function (result) {
@@ -200,6 +200,7 @@ function createRequest(token, theme, message, org_id, mark, model, number, regio
             dispatch(success(result.task_lk_id, result.task_lk_time_create, user, mark, model, number));
           }
         } else {
+          dispatch(failure(result.errors))
           openAlert(result.errors);
         }
       })

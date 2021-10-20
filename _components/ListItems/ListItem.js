@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Badge } from 'react-native-paper';
-import { styles } from '../_styles/styles';
+import { styles } from '../../_styles';
 import moment from 'moment';
 
 export const ListItem = ({ item, onPress }) => {

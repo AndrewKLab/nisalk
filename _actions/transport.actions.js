@@ -92,6 +92,7 @@ function createRepairRequest(token, mn_date, mn_vid_rep, mn_malfunction_id, mn_k
           openAlert();
           dispatch(success(result));
         } else {
+          dispatch(failure(result.errors))
           openAlert(result.errors);
         }
       })

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -10,20 +9,30 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 //screens
-import { LoginScreen, ReqestsScreen, ReqestСhatScreen, Appeals, AppealsItem, AppealsForm, 
+import { 
+  LoginScreen, 
   
+  //Reqests
+  ReqestsScreen, 
+  ReqestСhatScreen, 
+  
+  //Appeals
+  Appeals, 
+
+  //TS
   TS, 
   TSItem,
+
+  //TSRepairing
   TSRepairing,
 
   //forms
   TSForm,
   RepairForm,
+  FeedbackForm,
 } from '../screens';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
-import PushNotification from "react-native-push-notification";
 
 
 const MainStackNavigator = createStackNavigator();
@@ -142,16 +151,15 @@ const AppealsNavigator = ({ }) => {
         name="AppealsScreen"
         component={Appeals}
       />
-
-      <AppealsStackNavigator.Screen
-        options={({ navigation, route }) => ({ title: 'НИСА lk' })}
-        name="AppealsItemScreen"
-        component={AppealsItem}
-      />
-      <AppealsStackNavigator.Screen
+      <TSStackNavigator.Screen
         options={({ navigation, route }) => ({ title: route.params.title })}
-        name="AppealsFormScreen"
-        component={AppealsForm}
+        name="TSFormScreen"
+        component={TSForm}
+      />
+      <TSStackNavigator.Screen
+        options={({ navigation, route }) => ({ title: route.params.title })}
+        name="FeedbackFormScreen"
+        component={FeedbackForm}
       />
     </AppealsStackNavigator.Navigator>
   );
