@@ -19,7 +19,11 @@ const ReqestsScreen = ({ dispatch, jwt, requests, requests_loading, requests_err
     setSearchQuery(query)
     if (query !== '') {
       var rg_value = new RegExp(query, "i");
-      const result = requests.filter(item => item.task_lk_number !== null && item.task_lk_number.match(rg_value) !== null || item.task_lk_id !== null && String(item.task_lk_id).match(rg_value) !== null);
+      const result = requests.filter(item => 
+        item.task_lk_number !== null && item.task_lk_number.match(rg_value) !== null ||
+        item.task_lk_mark !== null && item.task_lk_mark.match(rg_value) !== null ||
+        item.task_lk_id !== null && String(item.task_lk_id).match(rg_value) !== null
+        );
       setSearchRequestsList(result)
 
     }

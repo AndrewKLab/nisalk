@@ -2,6 +2,7 @@ import { configApi } from './config';
 import axios from 'axios';
 import FormData from 'form-data';
 import DeviceInfo from 'react-native-device-info';
+import { getDiviceInfo, store } from '../_helpers';
 
 export const reqestsService = {
   getReuests,
@@ -15,7 +16,7 @@ export const reqestsService = {
 function getReuests(token) {
   var config = {
     method: 'get',
-    url: `${configApi.apiUrl}/app/requests/work`,
+    url: `${store.getState().authentication.source}/app/requests/work`,
     headers: {
       'Authorization': `Bearer ${token}`
     },
@@ -27,7 +28,7 @@ function getReuests(token) {
 function getArchiveReuests(token) {
   var config = {
     method: 'get',
-    url: `${configApi.apiUrl}/app/requests/archive`,
+    url: `${store.getState().authentication.source}/app/requests/archive`,
     headers: {
       'Authorization': `Bearer ${token}`
     },
@@ -39,7 +40,7 @@ function getArchiveReuests(token) {
 function getReuestMessages(token, req, offset, limit) {
   var config = {
     method: 'get',
-    url: `${configApi.apiUrl}/app/messages/lazyload/${req}/${offset}/${limit}`,
+    url: `${store.getState().authentication.source}/app/messages/lazyload/${req}/${offset}/${limit}`,
     headers: {
       'Authorization': `Bearer ${token}`
     },
@@ -64,7 +65,7 @@ function sendMessage(token, message, req, files) {
   // Please change file upload URL
   data.append('app_version', DeviceInfo.getVersion())
   return fetch(
-    `${configApi.apiUrl}/app/message/save?text_message=${message}&request_id=${req}`,
+    `${store.getState().authentication.source}/app/message/save?text_message=${message}&request_id=${req}`,
     {
       method: 'post',
       body: data,
@@ -82,7 +83,7 @@ function readMessages(token, type, req, message) {
   console.log(token, type, req, message)
   var config = {
     method: 'get',
-    url: `${configApi.apiUrl}/app/message/read/${type}/${req}/${message}`,
+    url: `${store.getState().authentication.source}/app/message/read/${type}/${req}/${message}`,
     headers: {
       'Authorization': `Bearer ${token}`
     },
@@ -107,7 +108,7 @@ function createRequest(token, theme, message, org_id, mark, model, number, regio
   }
   data.append('app_version', DeviceInfo.getVersion())
   return fetch(
-    `${configApi.apiUrl}/app/request/save?theme=${theme}&message=${message}&org_id=${org_id}&mark=${mark}&model=${model}&number=${number}&region=${region}`,
+    `${store.getState().authentication.source}/app/request/save?theme=${theme}&message=${message}&org_id=${org_id}&mark=${mark}&model=${model}&number=${number}&region=${region}`,
     {
       method: 'post',
       body: data,

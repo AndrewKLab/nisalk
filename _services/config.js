@@ -1,3 +1,5 @@
+import { store } from '../_helpers';
+
 export const configApi = {
-  apiUrl: 'https://lk.atc52.ru/api'
+  apiUrl: store.getState().authentication.source
 }

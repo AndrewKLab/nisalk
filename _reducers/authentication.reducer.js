@@ -1,6 +1,7 @@
 import { userConstants } from '../_constants';
 
 const initialState = {
+  source: null,
   login_error: null,
   login_loading: false,
   validate_loading: false,
@@ -9,6 +10,11 @@ const initialState = {
 
 export function authentication(state = initialState, action) {
   switch (action.type) {
+    case userConstants.SET_SOURCE:
+      return {
+        ...state,
+        source: action.source
+      }
     //SIGN-IN
     case userConstants.SIGNIN_REQUEST:
       return {
@@ -34,7 +40,7 @@ export function authentication(state = initialState, action) {
 
     //LOGOUT
     case userConstants.LOGOUT:
-      return initialState;
+      return {...initialState, source: state.source};
 
     //GET_TOKEN
     case userConstants.GET_TOKEN:

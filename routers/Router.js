@@ -9,27 +9,31 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 //screens
-import { 
-  LoginScreen, 
-  
+import {
+  LoginScreen,
+
   //Reqests
-  ReqestsScreen, 
-  ReqestСhatScreen, 
-  
+  ReqestsScreen,
+  ReqestСhatScreen,
+
   //Appeals
-  Appeals, 
+  Appeals,
 
   //TS
-  TS, 
+  TS,
   TSItem,
 
   //TSRepairing
   TSRepairing,
 
+  //Notifications
+  NotificationsScreen,
+
   //forms
   TSForm,
   RepairForm,
   FeedbackForm,
+  FillsForm
 } from '../screens';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -41,16 +45,33 @@ export const MainNavigator = ({ }) => {
   const [initialRouteName, setInitialRouteName] = useState("");
 
   useEffect(() => {
-    AsyncStorage.getItem('user').then((result) => {
-      dispatch(userActions.setInit(result))
+    AsyncStorage.getItem('source').then((source) => {
 
-      if (result === null) {
-        setInitialRouteName("Login")
+      if (source === null) {
+        dispatch(userActions.setSource('https://lk.atc52.ru/api'))
+
+        AsyncStorage.getItem('user').then((result) => {
+          dispatch(userActions.setInit(result))
+          if (result === null) {
+            setInitialRouteName("Login")
+          } else {
+            dispatch(userActions.validateToken(result, null, true, setInitialRouteName))
+          }
+        });
       } else {
-        dispatch(userActions.validateToken(result, null, true, setInitialRouteName))
+        console.log('router: ' + source)
+        dispatch(userActions.setSource(source))
+        AsyncStorage.getItem('user').then((result) => {
+          dispatch(userActions.setInit(result))
+
+          if (result === null) {
+            setInitialRouteName("Login")
+          } else {
+            dispatch(userActions.validateToken(result, null, true, setInitialRouteName))
+          }
+        });
       }
     });
-
   }, []);
 
   if (initialRouteName === "") { return null }
@@ -85,6 +106,7 @@ const BottomTabNavigator = ({ dispatch, route, navigation }) => {
         activeTintColor: '#fff',
         inactiveTintColor: 'rgba(255, 255, 255, 0.54)',
         tabStyle: { backgroundColor: '#2f7cfe' },
+        keyboardHidesTabBar: true,
 
       }}
     >
@@ -126,6 +148,13 @@ const BottomTabNavigator = ({ dispatch, route, navigation }) => {
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="car-cog" color={color} size={26} />
           ),
+        }}
+      />
+      <Tab.Screen
+        name="Notifications"
+        component={connectedNotificationsNavigator}
+        options={{
+          tabBarButton: props => null
         }}
       />
     </Tab.Navigator>
@@ -172,6 +201,35 @@ const AppealsMapStateToProps = (state) => {
 };
 const connectedAppealsNavigator = connect(AppealsMapStateToProps)(AppealsNavigator);
 
+const NotificationsStackNavigator = createStackNavigator();
+const NotificationsNavigator = ({ }) => {
+  const screenOptions = (navigation, route) => {
+    return {
+      headerRight: () => <HeaderRight navigation={navigation} />,
+      headerStyle: {
+        backgroundColor: '#2f7cfe',
+      },
+      headerTintColor: '#ffffff'
+    };
+  };
+
+  return (
+    <NotificationsStackNavigator.Navigator initialRouteName={'NotificationsScreen'} screenOptions={({ navigation, route }) => screenOptions(navigation, route)}>
+      <NotificationsStackNavigator.Screen
+        options={({ navigation, route }) => ({ title: 'НИСА lk', headerLeft: () => null, })}
+        name="NotificationsScreen"
+        component={NotificationsScreen}
+      />
+    </NotificationsStackNavigator.Navigator>
+  );
+}
+
+const NotificationsMapStateToProps = (state) => {
+  return {
+    jwt: state.authentication.jwt,
+  };
+};
+const connectedNotificationsNavigator = connect(NotificationsMapStateToProps)(NotificationsNavigator);
 
 const MyTasksStackNavigator = createStackNavigator();
 const MyTasks = ({ }) => {
@@ -243,6 +301,11 @@ const TSNavigator = ({ }) => {
         options={({ navigation, route }) => ({ title: route.params.title })}
         name="RepairFormScreen"
         component={RepairForm}
+      />
+      <TSStackNavigator.Screen
+        options={({ navigation, route }) => ({ title: route.params.title })}
+        name="FillsFormScreen"
+        component={FillsForm}
       />
     </TSStackNavigator.Navigator>
   );

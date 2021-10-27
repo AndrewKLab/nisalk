@@ -25,7 +25,7 @@ export const TSRepairingListItem = ({ children, item, }) => {
     }
 
     return (
-        <TouchableOpacity>
+        <TouchableOpacity disabled={item.mn_current_status === null}>
             <View style={styles.listitem}>
 
                 <View style={[styles.listitemTop, { borderBottomWidth: item.mn_vid_rep || item.mn_kilometrage || item.mn_runing_time || item.mn_notes ? 1 : 0 }]}>

@@ -4,12 +4,19 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export const userActions = {
+  setSource,
   signin,
   logout,
   validateToken,
   setInit,
 };
 
+
+function setSource(source) {
+  console.log(source)
+  AsyncStorage.setItem('source', source);
+  return { type: userConstants.SET_SOURCE, source };
+}
 
 function signin(phonenumber, password, navigation) {
   return (dispatch) => {

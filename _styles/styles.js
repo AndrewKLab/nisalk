@@ -411,7 +411,15 @@ export const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderWidth: 1,
     borderRadius: 8,
-  }
+  },
+
+  //
+  radioListItem: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    justifyContent: 'space-between' ,
+    marginBottom: 8
+  },
 
 
 

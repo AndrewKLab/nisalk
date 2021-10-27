@@ -11,7 +11,7 @@ import moment from 'moment';
 
 
 
-const RepairForm = ({ dispatch, navigation, jwt, route, create_reqest_loading, create_reqest_error, create_repair_reqest_message }) => {
+const RepairForm = ({ dispatch, navigation, jwt, route, create_repair_reqest_loading, create_repair_reqest_error, create_repair_reqest_message }) => {
     const { ts } = route.params;
 
     const [visible, setVisible] = useState(false);
@@ -143,7 +143,7 @@ const RepairForm = ({ dispatch, navigation, jwt, route, create_reqest_loading, c
                     onChangeText={text => setNote(text)}
                 />
 
-                <Button style={{ marginBottom: 8 }} mode="contained" loading={create_reqest_loading} onPress={() => sendMessage(date, selectedRepairType, selectedMalfunctionType, mileage, operating, note, ts)}>Отправить</Button>
+                <Button style={{ marginBottom: 8 }} mode="contained" loading={create_repair_reqest_loading} onPress={() => sendMessage(date, selectedRepairType, selectedMalfunctionType, mileage, operating, note, ts)}>Отправить</Button>
             </View>
 
             <Portal>
@@ -164,12 +164,12 @@ const RepairForm = ({ dispatch, navigation, jwt, route, create_reqest_loading, c
 
 const mapStateToProps = (state) => {
     const { jwt, user } = state.authentication;
-    const { create_reqest_loading, create_reqest_error, create_repair_reqest_message } = state.transport;
+    const { create_repair_reqest_loading, create_repair_reqest_error, create_repair_reqest_message } = state.transport;
     return {
         jwt,
         user,
-        create_reqest_loading,
-        create_reqest_error,
+        create_repair_reqest_loading,
+        create_repair_reqest_error,
         create_repair_reqest_message
     };
 };

@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { configApi } from './config';
 import axios from 'axios';
-import { getDiviceInfo } from '../_helpers';
+import { getDiviceInfo, store } from '../_helpers';
 
 export const auntificationService = {
   signin,
@@ -22,7 +22,7 @@ function signin(username, password) {
     formdata.append("password", password);
     var config = {
       method: 'post',
-      url: `${configApi.apiUrl}/login`,
+      url: `${store.getState().authentication.source}/login`,
       data: formdata
     };
     return axios(config)
@@ -32,10 +32,11 @@ function signin(username, password) {
 }
 
 function validateToken(token) {
+  console.log(store.getState().authentication.source)
   var data = new FormData();
   var config = {
     method: 'get',
-    url: `${configApi.apiUrl}/app/user`,
+    url: `${store.getState().authentication.source}/app/user`,
     headers: {
       'Authorization': `Bearer ${token}`
     },
@@ -52,7 +53,7 @@ function logout(token) {
     formdata.append('mac', res.mac)
     var config = {
       method: 'post',
-      url: `${configApi.apiUrl}/logout`,
+      url: `${store.getState().authentication.source}/logout`,
       headers: {
         'Authorization': `Bearer ${token}`
       },
