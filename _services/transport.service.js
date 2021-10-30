@@ -5,9 +5,11 @@ import { getDiviceInfo, store } from '../_helpers';
 
 export const transportService = {
   getTransports,
+  getTransport,
   createRepairRequest,
   getRepairingTransport,
-  createFillRequest
+  createFillRequest,
+  getGasFillingsTransport
 };
 
 function getTransports(token) {
@@ -19,6 +21,18 @@ function getTransports(token) {
       'Authorization': `Bearer ${token}`
     },
     data: data
+  };
+
+  return axios(config)
+}
+
+function getTransport(token, lk_ts_id) {
+  var config = {
+    method: 'get',
+    url: `${store.getState().authentication.source}/app/transport/${lk_ts_id}`,
+    headers: {
+      'Authorization': `Bearer ${token}`
+    },
   };
 
   return axios(config)
@@ -49,6 +63,18 @@ function createRepairRequest(token, mn_date, mn_vid_rep, mn_malfunction_id, mn_k
       },
     }
   );
+}
+
+function getGasFillingsTransport(token) {
+  var config = {
+    method: 'get',
+    url: `${store.getState().authentication.source}/app/transport/fillings/list`,
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  };
+
+  return axios(config)
 }
 
 function createFillRequest(token, action, lk_gf_ts_id, lk_gf_data_source, lk_gf_id, date, time, lk_gf_fuel_type, lk_gf_fuel_filled_amount, lk_gf_notes) {

@@ -28,10 +28,9 @@ const TSItem = ({ dispatch, navigation, route }) => {
     return (
         <View style={styles.transportItemContainer}>
             <View style={styles.transportItem}>
-                <Headline style={styles.transportItemTitle}>{item.lk_ts_brand}</Headline>
+                <Headline style={styles.transportItemTitle}>{`${item.lk_ts_reg_number} ${item.lk_ts_brand}`}</Headline>
                 <View style={styles.transportItemText} >
                     <Caption>{`Модель: ${item.lk_ts_model}`}</Caption>
-                    <Caption>{`Номер: ${item.lk_ts_reg_number}`}</Caption>
                 </View>
             </View>
             <ScrollView style={styles.transportFormButtonContainer}>
@@ -39,7 +38,7 @@ const TSItem = ({ dispatch, navigation, route }) => {
                 <Button compact={true} style={styles.transportFormButton} contentStyle={styles.transportFormButtonContent} mode="contained" onPress={() => goToForm('Заказать мониторнинг', 2)}>Заказать мониторнинг</Button>
                 <Button compact={true} style={styles.transportFormButton} contentStyle={styles.transportFormButtonContent} mode="contained" onPress={() => goToForm('Заказ или ремонт тахографа', 3)}>Заказ или ремонт тахографа</Button>
                 <Button compact={true} disabled={item.mn_current_status !== null} style={styles.transportFormButton} contentStyle={item.mn_current_status !== null ? styles.transportFormButtonContentDis : styles.transportFormButtonContent} mode="contained" onPress={() => goToForm('Ремонт', 4)}>{item.mn_current_status === null ? 'Ремонт' : 'Ремонт уже зарегистрирован'}</Button>
-                <Button compact={true} style={styles.transportFormButton} contentStyle={styles.transportFormButtonContentDis} mode="contained" onPress={() => goToForm('Заправки', 5)}>Заправки</Button>
+                <Button compact={true} style={styles.transportFormButton} contentStyle={styles.transportFormButtonContent} mode="contained" onPress={() => goToForm('Заправки', 5)}>Заправки</Button>
             </ScrollView>
         </View>
     )

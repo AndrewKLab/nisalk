@@ -12,3 +12,4 @@ export * from './ListItems/ListItem';
 export * from './ListItems/TSListItem';
 export * from './ListItems/TSRepairingListItem';
 export * from './ListItems/NotificationListItem';
+export * from './ListItems/TSGasFillingsListItem';

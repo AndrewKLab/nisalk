@@ -13,10 +13,14 @@ const initialState = {
   create_repair_reqest_message: null,
   create_repair_reqest_error: null,
 
+  gas_filligs_transport_loading: false,
+  gas_filligs_transport_error: null,
+  gas_filligs_transport: [],
+
   create_fill_reqest_loading: false,
   create_fill_reqest_message: null,
   create_fill_reqest_error: null,
-  
+
 };
 
 export function transport(state = initialState, action) {
@@ -83,6 +87,27 @@ export function transport(state = initialState, action) {
         ...state,
         create_repair_reqest_loading: false,
         create_repair_reqest_error: action.error,
+      };
+
+    //GET GAS FILLINGS TRANSPORTS REQUEST
+    case transportConstants.GET_GAS_FILLINGS_TRANSPORTS_REQUEST:
+      return {
+        ...state,
+        gas_filligs_transport_loading: true,
+        gas_filligs_transport_error: null,
+      };
+    case transportConstants.GET_GAS_FILLINGS_TRANSPORTS_SUCCESS:
+      return {
+        ...state,
+        gas_filligs_transport_loading: false,
+        gas_filligs_transport_error: null,
+        gas_filligs_transport: action.transports
+      };
+    case transportConstants.GET_GAS_FILLINGS_TRANSPORTS_FAILURE:
+      return {
+        ...state,
+        gas_filligs_transport_loading: false,
+        gas_filligs_transport_error: action.error,
       };
 
     //CREATE FILL REQEST

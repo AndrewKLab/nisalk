@@ -5,9 +5,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const transportActions = {
   getTransports,
+  getTransport,
   createRepairRequest,
   getRepairingTransport,
-  createFillRequest
+  createFillRequest,
+  getGasFillingsTransport
 };
 
 
@@ -34,6 +36,8 @@ function getTransports(jwt) {
       });
   };
 
+
+
   function request(jwt) {
     return { type: transportConstants.GET_TRANSPORTS_REQUEST, jwt };
   }
@@ -44,6 +48,20 @@ function getTransports(jwt) {
     return { type: transportConstants.GET_TRANSPORTS_FAILURE, error };
   }
 
+}
+
+function getTransport(jwt, lk_ts_id, navigation) {
+  return (dispatch) => {
+    return transportService.getTransports(jwt, lk_ts_id)
+      .then(
+        (response) => {
+          navigation.navigate('TSItemScreen', { item: response.data[0] })
+        }
+      )
+      .catch(error => {
+        console.log(error.message)
+      });
+  };
 }
 
 function getRepairingTransport(jwt) {
@@ -81,8 +99,6 @@ function getRepairingTransport(jwt) {
 }
 
 
-
-
 function createRepairRequest(token, mn_date, mn_vid_rep, mn_malfunction_id, mn_kilometrage, mn_runing_time, mn_notes, mn_ts_id, openAlert) {
   return (dispatch) => {
     dispatch(request({ token }));
@@ -116,6 +132,40 @@ function createRepairRequest(token, mn_date, mn_vid_rep, mn_malfunction_id, mn_k
   }
   function failure(error) {
     return { type: transportConstants.CREATE_REPAIR_REQUEST_FAILURE, error };
+  }
+}
+
+function getGasFillingsTransport(jwt) {
+  return (dispatch) => {
+    dispatch(request({ jwt }));
+
+    return transportService.getGasFillingsTransport(jwt)
+      .then(
+        (response) => {
+          //AsyncStorage.setItem('transports', JSON.stringify(response.data));
+          dispatch(success(response.data))
+        }
+      )
+      .catch(error => {
+        // AsyncStorage.getItem('transports').then((value) => {
+        //   if (value !== null) {
+        //     dispatch(success(JSON.parse(value)))
+        //   } else {
+        //     dispatch(failure(error.message))
+        //   }
+        // })
+        dispatch(failure(error.message))
+      });
+  };
+
+  function request(jwt) {
+    return { type: transportConstants.GET_GAS_FILLINGS_TRANSPORTS_REQUEST, jwt };
+  }
+  function success(transports) {
+    return { type: transportConstants.GET_GAS_FILLINGS_TRANSPORTS_SUCCESS, transports };
+  }
+  function failure(error) {
+    return { type: transportConstants.GET_GAS_FILLINGS_TRANSPORTS_FAILURE, error };
   }
 }
 

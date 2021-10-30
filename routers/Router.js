@@ -26,6 +26,9 @@ import {
   //TSRepairing
   TSRepairing,
 
+  //TSGasFillings
+  TSGasFillings,
+
   //Notifications
   NotificationsScreen,
 
@@ -33,7 +36,10 @@ import {
   TSForm,
   RepairForm,
   FeedbackForm,
-  FillsForm
+  FillsForm,
+
+  //_Helpers
+  QRCodeScannerScreen,
 } from '../screens';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -151,8 +157,25 @@ const BottomTabNavigator = ({ dispatch, route, navigation }) => {
         }}
       />
       <Tab.Screen
+        name="TSFills"
+        component={connectedTSFillNavigator}
+        options={{
+          tabBarLabel: 'Заправки',
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="gas-station" color={color} size={26} />
+          ),
+        }}
+      />
+      <Tab.Screen
         name="Notifications"
         component={connectedNotificationsNavigator}
+        options={{
+          tabBarButton: props => null
+        }}
+      />
+      <Tab.Screen
+        name="QRScanner"
+        component={QRCodeScannerScreen}
         options={{
           tabBarButton: props => null
         }}
@@ -331,7 +354,7 @@ const TSRepairNavigator = ({ }) => {
   };
 
   return (
-    <TSRepairStackNavigator.Navigator initialRouteName={'TSScreen'} screenOptions={({ navigation, route }) => screenOptions(navigation, route)}>
+    <TSRepairStackNavigator.Navigator initialRouteName={'TSRepairingScreen'} screenOptions={({ navigation, route }) => screenOptions(navigation, route)}>
       <TSRepairStackNavigator.Screen
         options={({ navigation, route }) => ({ title: 'НИСА lk', headerLeft: () => null })}
         name="TSRepairingScreen"
@@ -347,3 +370,33 @@ const TSRepairMapStateToProps = (state) => {
   };
 };
 const connectedTSRepairNavigator = connect(TSRepairMapStateToProps)(TSRepairNavigator);
+
+const TSFillStackNavigator = createStackNavigator();
+const TSFillNavigator = ({ }) => {
+  const screenOptions = (navigation, route) => {
+    return {
+      headerRight: () => <HeaderRight navigation={navigation} />,
+      headerStyle: {
+        backgroundColor: '#2f7cfe',
+      },
+      headerTintColor: '#ffffff'
+    };
+  };
+
+  return (
+    <TSFillStackNavigator.Navigator initialRouteName={'TSFillScreen'} screenOptions={({ navigation, route }) => screenOptions(navigation, route)}>
+      <TSFillStackNavigator.Screen
+        options={({ navigation, route }) => ({ title: 'НИСА lk', headerLeft: () => null })}
+        name="TSFillScreen"
+        component={TSGasFillings}
+      />
+    </TSFillStackNavigator.Navigator>
+  );
+}
+
+const TSFillMapStateToProps = (state) => {
+  return {
+    jwt: state.authentication.jwt,
+  };
+};
+const connectedTSFillNavigator = connect(TSFillMapStateToProps)(TSFillNavigator);

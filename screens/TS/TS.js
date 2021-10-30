@@ -3,7 +3,7 @@ import { Text, View, FlatList, ScrollView } from 'react-native';
 import { transportActions } from '../../_actions';
 import { connect } from 'react-redux';
 import { Alert, Loading, TSListItem, EmptyListComponent } from '../../_components';
-import { Searchbar, Button, Paragraph } from 'react-native-paper';
+import { Searchbar, IconButton, Paragraph } from 'react-native-paper';
 import { styles } from '../../_styles/styles';
 
 
@@ -20,7 +20,7 @@ const TS = ({ dispatch, route, navigation, jwt, transports, transports_loading, 
             var rg_value = new RegExp(query, "i");
             const result = transports.filter(
                 item => item.lk_ts_brand !== null && item.lk_ts_brand.match(rg_value) !== null ||
-                item.lk_ts_reg_number !== null && item.lk_ts_reg_number.match(rg_value) !== null
+                    item.lk_ts_reg_number !== null && item.lk_ts_reg_number.match(rg_value) !== null
             );
             setSearchTranstortList(result)
         }
@@ -50,6 +50,13 @@ const TS = ({ dispatch, route, navigation, jwt, transports, transports_loading, 
                 placeholder="Поиск"
                 onChangeText={onChangeSearch}
                 value={searchQuery}
+                clearIcon={() =>
+                    <IconButton
+                        icon="qrcode-scan"
+                        size={25}
+                        onPress={() => navigation.navigate('QRScanner')}
+                    />
+                }
             />
             <FlatList
                 data={searchQuery === '' ? transports : searchTranstortList}
