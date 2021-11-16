@@ -15,7 +15,6 @@ const FillsForm = ({ dispatch, navigation, jwt, route, create_fill_reqest_loadin
     const { ts } = route.params;
 
     const [visible, setVisible] = useState(false);
-
     const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
 
@@ -36,11 +35,11 @@ const FillsForm = ({ dispatch, navigation, jwt, route, create_fill_reqest_loadin
     };
 
     const onChangeTime = (event, selectedTime) => {
-        const currentTime = selectedTime || date;
+        const currentTime = selectedTime || time;
         setShowTime(Platform.OS === 'ios');
         setTime(currentTime);
     };
-
+    
     const showDatePiker = () => {
         setShow(true);
     };
@@ -68,7 +67,7 @@ const FillsForm = ({ dispatch, navigation, jwt, route, create_fill_reqest_loadin
         if (lk_gf_fuel_filled_amount === '') {
             showModal('Пожалуйста заполните поле "Литры"!');
         } else {
-            dispatch(transportActions.createFillRequest(jwt, action, lk_gf_ts_id, lk_gf_data_source, lk_gf_id, moment(date).format('YYYY-MM-DD'), moment(time).format('HH:MM'),lk_gf_fuel_type, lk_gf_fuel_filled_amount, lk_gf_notes, showModal))
+            dispatch(transportActions.createFillRequest(jwt, action, lk_gf_ts_id, lk_gf_data_source, lk_gf_id, moment(date).format('YYYY-MM-DD'), moment(time).format('HH:mm'),lk_gf_fuel_type, lk_gf_fuel_filled_amount, lk_gf_notes, showModal))
         }
     }
 
@@ -90,13 +89,14 @@ const FillsForm = ({ dispatch, navigation, jwt, route, create_fill_reqest_loadin
                         <View style={{width: '50%'}}>
                             <Paragraph>{"Время:"}</Paragraph>
                             <View style={[styles.formInput, { padding: 14, borderWidth: 1, borderRadius: 2, borderColor: 'rgba(0,0,0,0.54)', width: '100%' }]}>
-                                <Paragraph style={{ fontSize: 16 }}>{moment(time).format("HH:MM")}</Paragraph>
+                                <Paragraph style={{ fontSize: 16 }}>{moment(time).format("HH:mm")}</Paragraph>
                             </View>
                         </View>
                     </TouchableWithoutFeedback >
                 </View>
                 {show && (
                     <DateTimePicker
+                        testID="datePicker"
                         value={date}
                         mode={'date'}
                         is24Hour={true}
@@ -106,8 +106,9 @@ const FillsForm = ({ dispatch, navigation, jwt, route, create_fill_reqest_loadin
                 )}
                 {showTime && (
                     <DateTimePicker
+                        testID="timePicker"
                         value={time}
-                        mode={'time'}
+                        mode='time'
                         is24Hour={true}
                         display="default"
                         onChange={onChangeTime}
@@ -148,6 +149,7 @@ const FillsForm = ({ dispatch, navigation, jwt, route, create_fill_reqest_loadin
                     label="Примечания"
                     value={note}
                     style={styles.formInput}
+    
                     onChangeText={text => setNote(text)}
                 />
 
