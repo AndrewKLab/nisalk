@@ -37,7 +37,12 @@ const TSItem = ({ dispatch, navigation, route }) => {
                 <Button compact={true} style={styles.transportFormButton} contentStyle={styles.transportFormButtonContent} mode="contained" onPress={() => goToForm('Техподдержка', 1)}>Техподдержка</Button>
                 <Button compact={true} style={styles.transportFormButton} contentStyle={styles.transportFormButtonContent} mode="contained" onPress={() => goToForm('Заказать мониторнинг', 2)}>Заказать мониторнинг</Button>
                 <Button compact={true} style={styles.transportFormButton} contentStyle={styles.transportFormButtonContent} mode="contained" onPress={() => goToForm('Заказ или ремонт тахографа', 3)}>Заказ или ремонт тахографа</Button>
-                <Button compact={true} disabled={item.mn_current_status !== null} style={styles.transportFormButton} contentStyle={item.mn_current_status !== null ? styles.transportFormButtonContentDis : styles.transportFormButtonContent} mode="contained" onPress={() => goToForm('Ремонт', 4)}>{item.mn_current_status === null ? 'Ремонт' : 'Ремонт уже зарегистрирован'}</Button>
+                <Button compact={true}
+                    disabled={item.mn_current_status === 'Исполнение' || item.mn_current_status === "Создан"}
+                    style={styles.transportFormButton} 
+                    contentStyle={item.mn_current_status === 'Исполнение' || item.mn_current_status === "Создан" ? styles.transportFormButtonContentDis : styles.transportFormButtonContent}
+                    mode="contained"
+                    onPress={() => goToForm('Ремонт', 4)}>{item.mn_current_status === 'Исполнение' || item.mn_current_status === "Создан" ? 'Ремонт' : 'Ремонт уже зарегистрирован'}</Button>
                 <Button compact={true} style={styles.transportFormButton} contentStyle={styles.transportFormButtonContent} mode="contained" onPress={() => goToForm('Заправки', 5)}>Заправки</Button>
             </ScrollView>
         </View>
